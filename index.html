@@ -92,13 +92,38 @@ body {
     cursor: pointer;
 }
 
-#rssFeed {
+/* 🎛️ MINI TELA DE NEWS */
+#newsDisplay {
     margin-top: 20px;
-    background:#141414;
-    padding:15px;
-    border-radius:15px;
-    font-size:14px;
-    cursor:pointer;
+    background: #000;
+    border-radius: 15px;
+    padding: 15px;
+    border: 2px solid #ED2129;
+    box-shadow: 0 0 20px rgba(237,33,41,0.4);
+    overflow: hidden;
+    position: relative;
+}
+
+.news-label {
+    position: absolute;
+    top: 8px;
+    left: 12px;
+    font-size: 10px;
+    color: #ED2129;
+    letter-spacing: 2px;
+}
+
+#newsTicker {
+    margin-top: 10px;
+    white-space: nowrap;
+    display: inline-block;
+    animation: tickerMove 12s linear infinite;
+    font-size: 14px;
+}
+
+@keyframes tickerMove {
+    from { transform: translateX(100%); }
+    to { transform: translateX(-100%); }
 }
 
 .footer {
@@ -137,7 +162,11 @@ body {
 <div class="card">📰 Notícias</div>
 </div>
 
-<div id="rssFeed">Carregando notícias...</div>
+<!-- 📺 MINI TELA -->
+<div id="newsDisplay">
+  <div class="news-label">LIVE NEWS</div>
+  <div id="newsTicker">Carregando notícias...</div>
+</div>
 
 </div>
 
@@ -208,37 +237,25 @@ function setupObservers() {
 
 setupObservers();
 
-/* NOTÍCIAS ROTATIVAS (FUNCIONA 100%) */
+/* 📰 NEWS ESTILO MONITOR */
 const noticias = [
-{
-title:"🎵 Música brasileira cresce no streaming global",
-link:"https://news.google.com/search?q=música"
-},
-{
-title:"🌴 Ceará vira destaque no turismo nacional",
-link:"https://news.google.com/search?q=turismo+ceará"
-},
-{
-title:"✈️ Viagens internacionais voltam com força",
-link:"https://news.google.com/search?q=viagens+internacionais"
-},
-{
-title:"🔬 Descobertas científicas impressionam o mundo",
-link:"https://news.google.com/search?q=ciência"
-}
+"🎵 Música brasileira domina o streaming global",
+"🌴 Ceará cresce como destino turístico em destaque",
+"✈️ Viagens internacionais voltam com força total",
+"🔬 Nova descoberta científica pode mudar o futuro",
+"🌍 Tendências globais apontam novas experiências culturais"
 ];
 
 let i = 0;
 
-setInterval(() => {
-const n = noticias[i];
+function atualizarNews() {
+    const ticker = document.getElementById("newsTicker");
+    ticker.innerText = noticias[i];
+    i = (i + 1) % noticias.length;
+}
 
-document.getElementById("rssFeed").innerHTML =
-`<div onclick="window.open('${n.link}', '_blank')">${n.title}</div>`;
-
-i = (i + 1) % noticias.length;
-
-}, 4000);
+setInterval(atualizarNews, 4000);
+atualizarNews();
 </script>
 
 </body>
