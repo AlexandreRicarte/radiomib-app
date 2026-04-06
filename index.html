@@ -80,7 +80,7 @@ body {
 
 .grid {
     display: grid;
-    grid-template-columns: 1fr 1fr;
+    grid-template-columns: repeat(3, 1fr);
     gap: 12px;
     margin-top: 20px;
 }
@@ -90,9 +90,29 @@ body {
     padding: 15px;
     border-radius: 15px;
     cursor: pointer;
+    transition: transform 0.2s ease;
 }
 
-/* 🎛️ MINI TELA DE NEWS */
+.card:hover {
+    transform: scale(1.05);
+}
+
+/* ÍCONES */
+.icon-card {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    gap: 8px;
+}
+
+.icon-card img {
+    width: 28px;
+    height: 28px;
+    filter: invert(1);
+}
+
+/* MINI TELA NEWS */
 #newsDisplay {
     margin-top: 20px;
     background: #000;
@@ -156,13 +176,25 @@ body {
 </div>
 
 <div class="grid">
-<div class="card" onclick="openInsta()">📸 Instagram</div>
-<div class="card" onclick="openThreads()">🧵 Threads</div>
-<div class="card" onclick="participar()">🎙️ Participar</div>
-<div class="card">📰 Notícias</div>
+
+<div class="card icon-card" onclick="openInsta()">
+<img src="https://cdn.jsdelivr.net/gh/simple-icons/simple-icons/icons/instagram.svg">
+<span>Instagram</span>
 </div>
 
-<!-- 📺 MINI TELA -->
+<div class="card icon-card" onclick="openThreads()">
+<img src="https://cdn.jsdelivr.net/gh/simple-icons/simple-icons/icons/threads.svg">
+<span>Threads</span>
+</div>
+
+<div class="card icon-card" onclick="participar()">
+<img src="https://cdn.jsdelivr.net/gh/simple-icons/simple-icons/icons/whatsapp.svg">
+<span>Participar</span>
+</div>
+
+</div>
+
+<!-- MINI TELA -->
 <div id="newsDisplay">
   <div class="news-label">LIVE NEWS</div>
   <div id="newsTicker">Carregando notícias...</div>
@@ -188,7 +220,6 @@ body {
 <script>
 const player = document.getElementById('radioPlayer');
 
-/* PLAYER */
 function playRadio() {
     player.src = "https://r10.ciclano.io/proxy/radiomib/stream?t=" + Date.now();
     player.play();
@@ -199,7 +230,6 @@ function stopRadio() {
     player.currentTime = 0;
 }
 
-/* REDES */
 function openInsta() {
     window.open("https://www.instagram.com/radiomibprodutora/", "_blank");
 }
@@ -212,7 +242,6 @@ function participar() {
     window.open("https://wa.me/5585988148344?text=Estou%20ouvindo%20a%20Rádio%20MIB!", "_blank");
 }
 
-/* METADATA */
 function mirrorText(fromEl, toEl, placeholder) {
     const txt = (fromEl.textContent || "").trim();
     toEl.textContent = txt || placeholder;
@@ -237,7 +266,7 @@ function setupObservers() {
 
 setupObservers();
 
-/* 📰 NEWS ESTILO MONITOR */
+/* NEWS ESTILO MONITOR */
 const noticias = [
 "🎵 Música brasileira domina o streaming global",
 "🌴 Ceará cresce como destino turístico em destaque",
