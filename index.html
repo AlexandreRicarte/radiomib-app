@@ -1,0 +1,271 @@
+<!DOCTYPE html>
+<html lang="pt-br">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+<title>Rádio MIB</title>
+
+<link href="https://fonts.googleapis.com/css?family=Comfortaa:700&display=swap" rel="stylesheet" />
+
+<style>
+body {
+    margin: 0;
+    font-family: 'Comfortaa', sans-serif;
+    background: #000;
+    display: flex;
+    justify-content: center;
+}
+
+.container {
+    width: 100%;
+    max-width: 420px;
+    min-height: 100vh;
+    background: #0b0b0b;
+    color: white;
+}
+
+.header {
+    padding: 18px;
+    text-align: center;
+    font-weight: bold;
+    letter-spacing: 2px;
+    background: linear-gradient(90deg, #ED2129, #ff7a00);
+}
+
+.cover {
+    height: 240px;
+    background: url('https://raw.githubusercontent.com/AlexandreRicarte/logo-mib/main/logoboneconovo.png') center/contain no-repeat;
+}
+
+.section {
+    padding: 20px;
+    text-align: center;
+}
+
+.text3d {
+    font-size: 22px;
+    color: #ED2129;
+    margin-bottom: 10px;
+}
+
+.scroll-text {
+    display: block;
+    overflow: hidden;
+    white-space: nowrap;
+    animation: scrollText 10s linear infinite;
+    font-size: 14px;
+}
+
+@keyframes scrollText {
+    from { transform: translateX(100%); }
+    to { transform: translateX(-100%); }
+}
+
+.controls {
+    margin-top: 20px;
+}
+
+.btn {
+    width: 70px;
+    height: 70px;
+    border-radius: 50%;
+    border: 3px solid #ED2129;
+    background: rgba(237,33,41,0.1);
+    margin: 5px;
+    cursor: pointer;
+    color: white;
+    font-size: 20px;
+}
+
+.grid {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 12px;
+    margin-top: 20px;
+}
+
+.card {
+    background: #141414;
+    padding: 15px;
+    border-radius: 15px;
+    cursor: pointer;
+}
+
+/* RSS */
+#rssFeed {
+    margin-top: 20px;
+}
+
+.news-item {
+    background:#141414;
+    padding:15px;
+    border-radius:15px;
+    margin-bottom:10px;
+    font-size:14px;
+    cursor:pointer;
+}
+
+.footer {
+    text-align: center;
+    padding: 15px;
+    font-size: 12px;
+    color: #777;
+}
+</style>
+</head>
+
+<body>
+
+<div class="container">
+
+<div class="header">RÁDIO MIB</div>
+
+<div class="cover"></div>
+
+<div class="section">
+
+<div class="text3d">AO VIVO</div>
+
+<span id="artistText" class="scroll-text">Carregando artista...</span>
+<span id="titleText" class="scroll-text">Carregando música...</span>
+
+<div class="controls">
+<button class="btn" onclick="playRadio()">▶</button>
+<button class="btn" onclick="stopRadio()">■</button>
+</div>
+
+<div class="grid">
+<div class="card" onclick="openInsta()">📸 Instagram</div>
+<div class="card" onclick="openThreads()">🧵 Threads</div>
+<div class="card" onclick="participar()">🎙️ Participar</div>
+<div class="card">📰 Notícias</div>
+</div>
+
+<div id="rssFeed"></div>
+
+</div>
+
+<div class="footer">MiB é made in Brasil, baby</div>
+
+</div>
+
+<!-- PLAYER -->
+<audio id="radioPlayer" preload="none">
+<source src="https://r10.ciclano.io/proxy/radiomib/stream" type="audio/mpeg" />
+</audio>
+
+<!-- CENTOVA -->
+<span id="ccArtist" class="cc_streaminfo" data-type="trackartist" data-username="radiomib" style="display:none"></span>
+<span id="ccTitle" class="cc_streaminfo" data-type="tracktitle" data-username="radiomib" style="display:none"></span>
+
+<script src="https://r10.ciclano.io:2199/system/streaminfo.js"></script>
+
+<script>
+const player = document.getElementById('radioPlayer');
+
+/* PLAYER */
+function playRadio() {
+    player.src = "https://r10.ciclano.io/proxy/radiomib/stream?t=" + Date.now();
+    player.play();
+}
+
+function stopRadio() {
+    player.pause();
+    player.currentTime = 0;
+}
+
+/* REDES */
+function openInsta() {
+    window.open("https://www.instagram.com/radiomibprodutora/", "_blank");
+}
+
+function openThreads() {
+    window.open("https://www.threads.net/@radiomibprodutora", "_blank");
+}
+
+function participar() {
+    window.open("https://wa.me/5585988148344?text=Estou%20ouvindo%20a%20Rádio%20MIB!", "_blank");
+}
+
+/* METADATA */
+function mirrorText(fromEl, toEl, placeholder) {
+    const txt = (fromEl.textContent || "").trim();
+    toEl.textContent = txt || placeholder;
+}
+
+function setupObservers() {
+    const artistSrc = document.getElementById('ccArtist');
+    const titleSrc  = document.getElementById('ccTitle');
+    const artistOut = document.getElementById('artistText');
+    const titleOut  = document.getElementById('titleText');
+
+    const cfg = { childList: true, subtree: true };
+
+    new MutationObserver(() => {
+        mirrorText(artistSrc, artistOut, "—");
+    }).observe(artistSrc, cfg);
+
+    new MutationObserver(() => {
+        mirrorText(titleSrc, titleOut, "—");
+    }).observe(titleSrc, cfg);
+}
+
+setupObservers();
+
+/* RSS REAL FUNCIONANDO */
+const feeds = [
+"https://news.google.com/rss/search?q=música&hl=pt-BR&gl=BR&ceid=BR:pt-419",
+"https://news.google.com/rss/search?q=turismo+ceará&hl=pt-BR&gl=BR&ceid=BR:pt-419",
+"https://news.google.com/rss/search?q=viagens+internacionais&hl=pt-BR&gl=BR&ceid=BR:pt-419",
+"https://news.google.com/rss/search?q=descobertas+científicas&hl=pt-BR&gl=BR&ceid=BR:pt-419"
+];
+
+let noticias = [];
+
+async function carregarFeeds() {
+    for (let feed of feeds) {
+        try {
+            const res = await fetch("https://api.allorigins.win/get?url=" + encodeURIComponent(feed));
+            const data = await res.json();
+            const parser = new DOMParser();
+            const xml = parser.parseFromString(data.contents, "text/xml");
+
+            const items = xml.querySelectorAll("item");
+
+            items.forEach(item => {
+                noticias.push({
+                    title: item.querySelector("title")?.textContent,
+                    link: item.querySelector("link")?.textContent
+                });
+            });
+
+        } catch(e) {
+            console.log("Erro no feed:", e);
+        }
+    }
+
+    mostrarNoticias();
+}
+
+function mostrarNoticias() {
+    const container = document.getElementById("rssFeed");
+
+    setInterval(() => {
+        if (noticias.length === 0) return;
+
+        const n = noticias[Math.floor(Math.random() * noticias.length)];
+
+        container.innerHTML = `
+            <div class="news-item" onclick="window.open('${n.link}', '_blank')">
+                📰 ${n.title}
+            </div>
+        `;
+    }, 4000);
+}
+
+carregarFeeds();
+</script>
+
+</body>
+</html>
