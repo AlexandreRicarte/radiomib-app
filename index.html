@@ -24,32 +24,51 @@ body {
     color: white;
 }
 
-/* HEADER */
+/* HEADER PREMIUM */
 .header {
-    padding: 10px 0;
+    padding: 15px;
     background: linear-gradient(90deg, #ED2129, #ff7a00);
+    position: relative;
     overflow: hidden;
 }
 
-/* LOGOS */
-#sponsorWrapper {
-    overflow: hidden;
-    padding: 0 15px;
+/* FADE LATERAL */
+.header::before,
+.header::after {
+    content: "";
+    position: absolute;
+    top: 0;
+    width: 40px;
+    height: 100%;
+    z-index: 2;
 }
 
+.header::before {
+    left: 0;
+    background: linear-gradient(to right, #ED2129, transparent);
+}
+
+.header::after {
+    right: 0;
+    background: linear-gradient(to left, #ff7a00, transparent);
+}
+
+/* LOGOS SUAVE (fade) */
 #sponsorTrack {
     display: flex;
-    gap: 40px;
-    animation: sponsorMove 12s linear infinite;
+    justify-content: center;
+    align-items: center;
 }
 
 #sponsorTrack img {
     height: 26px;
+    position: absolute;
+    opacity: 0;
+    transition: opacity 1s ease;
 }
 
-@keyframes sponsorMove {
-    from { transform: translateX(100%); }
-    to { transform: translateX(-100%); }
+#sponsorTrack img.active {
+    opacity: 1;
 }
 
 /* COVER */
@@ -58,15 +77,38 @@ body {
     background: url('https://raw.githubusercontent.com/AlexandreRicarte/logo-mib/main/logoboneconovo.png') center/contain no-repeat;
 }
 
+/* ÁREA */
 .section {
     padding: 20px;
     text-align: center;
 }
 
-/* TEXTOS */
-.scroll-area {
+/* TEXTO PREMIUM */
+.text-box {
+    position: relative;
     overflow: hidden;
-    padding: 0 15px;
+    padding: 0 20px;
+}
+
+/* fade lateral */
+.text-box::before,
+.text-box::after {
+    content: "";
+    position: absolute;
+    top: 0;
+    width: 30px;
+    height: 100%;
+    z-index: 2;
+}
+
+.text-box::before {
+    left: 0;
+    background: linear-gradient(to right, #0b0b0b, transparent);
+}
+
+.text-box::after {
+    right: 0;
+    background: linear-gradient(to left, #0b0b0b, transparent);
 }
 
 .scroll-text {
@@ -120,14 +162,32 @@ body {
     width: 28px;
 }
 
-/* NEWS */
+/* NEWS PREMIUM */
 #newsDisplay {
     margin: 20px 15px;
     background: #000;
     border-radius: 15px;
     padding: 15px;
     border: 2px solid #ED2129;
+    position: relative;
     overflow: hidden;
+}
+
+/* brilho animado */
+#newsDisplay::after {
+    content: "";
+    position: absolute;
+    width: 200%;
+    height: 100%;
+    top: 0;
+    left: -100%;
+    background: linear-gradient(120deg, transparent, rgba(255,255,255,0.2), transparent);
+    animation: shine 4s infinite;
+}
+
+@keyframes shine {
+    from { left: -100%; }
+    to { left: 100%; }
 }
 
 #newsTicker {
@@ -153,13 +213,10 @@ body {
 
 <!-- HEADER -->
 <div class="header">
-  <div id="sponsorWrapper">
-    <div id="sponsorTrack">
-      <!-- IMAGENS QUE FUNCIONAM -->
-      <img src="https://upload.wikimedia.org/wikipedia/commons/0/05/Brazil_flag_300.png">
-      <img src="https://upload.wikimedia.org/wikipedia/commons/thumb/5/5a/Logo_Caixa_Econ%C3%B4mica_Federal.svg/320px-Logo_Caixa_Econ%C3%B4mica_Federal.svg.png">
-      <img src="https://upload.wikimedia.org/wikipedia/commons/thumb/7/73/Governo_do_Cear%C3%A1_logo.svg/320px-Governo_do_Cear%C3%A1_logo.svg.png">
-    </div>
+  <div id="sponsorTrack">
+    <img src="https://upload.wikimedia.org/wikipedia/commons/0/05/Brazil_flag_300.png" class="active">
+    <img src="https://upload.wikimedia.org/wikipedia/commons/thumb/5/5a/Logo_Caixa_Econ%C3%B4mica_Federal.svg/320px-Logo_Caixa_Econ%C3%B4mica_Federal.svg.png">
+    <img src="https://upload.wikimedia.org/wikipedia/commons/thumb/7/73/Governo_do_Cear%C3%A1_logo.svg/320px-Governo_do_Cear%C3%A1_logo.svg.png">
   </div>
 </div>
 
@@ -167,22 +224,19 @@ body {
 
 <div class="section">
 
-<!-- CENTOVA -->
-<div class="scroll-area">
+<div class="text-box">
   <span id="artistText" class="scroll-text">Carregando artista...</span>
 </div>
 
-<div class="scroll-area">
+<div class="text-box">
   <span id="titleText" class="scroll-text">Carregando música...</span>
 </div>
 
-<!-- PLAYER -->
 <div>
 <button class="btn" onclick="playRadio()">▶</button>
 <button class="btn" onclick="stopRadio()">■</button>
 </div>
 
-<!-- REDES -->
 <div class="grid">
 
 <div class="card icon-card" onclick="openInsta()">
@@ -202,7 +256,6 @@ body {
 
 </div>
 
-<!-- NEWS -->
 <div id="newsDisplay">
   <div id="newsTicker">Carregando notícias...</div>
 </div>
@@ -213,10 +266,8 @@ body {
 
 </div>
 
-<!-- PLAYER -->
 <audio id="radioPlayer"></audio>
 
-<!-- CENTOVA (ESSENCIAL) -->
 <span id="ccArtist" class="cc_streaminfo" data-type="trackartist" data-username="radiomib" style="display:none"></span>
 <span id="ccTitle" class="cc_streaminfo" data-type="tracktitle" data-username="radiomib" style="display:none"></span>
 
@@ -234,16 +285,24 @@ function stopRadio() {
     player.pause();
 }
 
-/* 🔥 ESSA PARTE QUE ESTAVA FALTANDO */
-function atualizarTexto() {
+/* TEXTO */
+setInterval(() => {
     document.getElementById("artistText").innerText =
         document.getElementById("ccArtist").innerText || "—";
 
     document.getElementById("titleText").innerText =
         document.getElementById("ccTitle").innerText || "—";
-}
+}, 2000);
 
-setInterval(atualizarTexto, 2000);
+/* LOGOS FADE */
+const logos = document.querySelectorAll("#sponsorTrack img");
+let l = 0;
+
+setInterval(() => {
+    logos[l].classList.remove("active");
+    l = (l + 1) % logos.length;
+    logos[l].classList.add("active");
+}, 3000);
 
 /* LINKS */
 function openInsta() {
@@ -261,9 +320,9 @@ function participar() {
 /* NEWS */
 const noticias = [
 "🎵 Música brasileira em alta global",
-"🌴 Turismo no Ceará cresce",
-"✈️ Viagens internacionais voltam",
-"🔬 Ciência surpreende o mundo"
+"🌴 Ceará cresce no turismo",
+"✈️ Viagens internacionais bombando",
+"🔬 Ciência revela novas descobertas"
 ];
 
 let i = 0;
