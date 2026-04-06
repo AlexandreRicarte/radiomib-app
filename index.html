@@ -24,17 +24,16 @@ body {
     color: #e5e5e5;
 }
 
-/* HEADER TECNOLÓGICO */
+/* HEADER */
 .header {
     height: 60px;
     display: flex;
     align-items: center;
     justify-content: center;
     border-bottom: 1px solid rgba(255,255,255,0.05);
-    position: relative;
 }
 
-/* patrocinadores */
+/* PATROCINADORES */
 #sponsorTrack {
     position: relative;
     width: 100%;
@@ -46,7 +45,7 @@ body {
     left: 50%;
     transform: translateX(-50%);
     opacity: 0;
-    transition: opacity 1.2s ease;
+    transition: opacity 1s ease;
 }
 
 #sponsorTrack a.active {
@@ -54,8 +53,10 @@ body {
 }
 
 #sponsorTrack img {
-    height: 22px;
-    filter: grayscale(1) brightness(1.8);
+    height: 24px;
+    max-width: 150px;
+    object-fit: contain;
+    filter: brightness(0) invert(1);
 }
 
 /* COVER */
@@ -64,11 +65,10 @@ body {
     background: url('https://raw.githubusercontent.com/AlexandreRicarte/logo-mib/main/logoboneconovo.png') center/contain no-repeat;
 }
 
-/* TEXTOS */
+/* INFO */
 .info {
-    padding: 15px 20px;
+    padding: 10px 20px;
     font-size: 13px;
-    letter-spacing: 0.3px;
     opacity: 0.85;
 }
 
@@ -89,10 +89,6 @@ body {
     color: white;
     font-size: 18px;
     cursor: pointer;
-}
-
-.btn:hover {
-    background: rgba(255,255,255,0.05);
 }
 
 /* REDES */
@@ -117,9 +113,8 @@ body {
     margin-bottom: 5px;
 }
 
-/* NEWS PROFISSIONAL */
+/* NEWS */
 .news-bar {
-    position: relative;
     background: #000;
     border-top: 1px solid rgba(255,255,255,0.05);
     border-bottom: 1px solid rgba(255,255,255,0.05);
@@ -130,16 +125,13 @@ body {
 }
 
 .news-track {
-    display: inline-block;
     white-space: nowrap;
     padding-left: 100%;
-    animation: newsScroll linear infinite;
+    animation: scroll linear infinite;
     font-size: 13px;
-    letter-spacing: 0.4px;
 }
 
-/* VELOCIDADE MAIS LENTA E LEGÍVEL */
-@keyframes newsScroll {
+@keyframes scroll {
     from { transform: translateX(0); }
     to { transform: translateX(-100%); }
 }
@@ -161,16 +153,16 @@ body {
 <div class="header">
 <div id="sponsorTrack">
 
-<a href="https://www.caixa.gov.br" target="_blank" class="active">
-<img src="https://logo.clearbit.com/caixa.gov.br">
+<a href="https://www.coca-cola.com" target="_blank" class="active">
+<img src="https://upload.wikimedia.org/wikipedia/commons/thumb/c/ce/Coca-Cola_logo.svg/320px-Coca-Cola_logo.svg.png">
 </a>
 
-<a href="https://www.gov.br" target="_blank">
-<img src="https://logo.clearbit.com/brasil.gov.br">
+<a href="https://www.burgerking.com" target="_blank">
+<img src="https://upload.wikimedia.org/wikipedia/commons/thumb/7/79/Burger_King_logo.svg/320px-Burger_King_logo.svg.png">
 </a>
 
-<a href="https://www.ceara.gov.br" target="_blank">
-<img src="https://logo.clearbit.com/ceara.gov.br">
+<a href="https://www.mcdonalds.com" target="_blank">
+<img src="https://upload.wikimedia.org/wikipedia/commons/thumb/4/4e/McDonald%27s_logo.svg/320px-McDonald%27s_logo.svg.png">
 </a>
 
 </div>
@@ -203,7 +195,6 @@ Participar
 </div>
 </div>
 
-<!-- NEWS CONTÍNUO -->
 <div class="news-bar">
 <div id="newsTrack" class="news-track"></div>
 </div>
@@ -231,7 +222,7 @@ function stopRadio(){
 player.pause();
 }
 
-/* CENTOVA */
+/* CENTOVA (INTACTO) */
 setInterval(()=>{
 document.getElementById("artistText").innerText =
 document.getElementById("ccArtist").innerText || "—";
@@ -240,7 +231,7 @@ document.getElementById("titleText").innerText =
 document.getElementById("ccTitle").innerText || "—";
 },2000);
 
-/* PATROCINADORES SUAVE */
+/* PATROCINADORES */
 const sponsors=document.querySelectorAll("#sponsorTrack a");
 let s=0;
 setInterval(()=>{
@@ -254,21 +245,19 @@ function openInsta(){window.open("https://www.instagram.com/radiomibprodutora/")
 function openThreads(){window.open("https://www.threads.net/@radiomibprodutora")}
 function participar(){window.open("https://wa.me/5585988148344")}
 
-/* NEWS CONTÍNUO SEM CORTE */
+/* NEWS CONTÍNUO */
 const noticias=[
-"🎵 Música brasileira em crescimento global",
-"🌴 Turismo no Ceará bate recordes",
-"✈️ Viagens internacionais retomam força",
-"🔬 Descobertas científicas avançam rapidamente"
+"Música brasileira em crescimento global",
+"Turismo no Ceará bate recordes",
+"Viagens internacionais retomam força",
+"Descobertas científicas avançam rapidamente"
 ];
 
 const track=document.getElementById("newsTrack");
 
-/* junta tudo em uma linha contínua */
 track.innerText = noticias.join("   •   ") + "   •   " + noticias.join("   •   ");
 
-/* define velocidade baseada no tamanho */
-const duration = track.innerText.length * 0.25;
+const duration = track.innerText.length * 0.35;
 track.style.animationDuration = duration + "s";
 </script>
 
