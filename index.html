@@ -59,10 +59,9 @@ body {
 }
 
 #sponsorTrack img {
-    height: 20px;
-    max-width: 140px;
+    height: 22px;
+    max-width: 150px;
     object-fit: contain;
-    filter: brightness(1.2) contrast(1.1);
 }
 
 /* COVER */
@@ -71,34 +70,32 @@ body {
     background: url('https://raw.githubusercontent.com/AlexandreRicarte/logo-mib/main/logoboneconovo.png') center/contain no-repeat;
 }
 
-/* TEXTO COM SCROLL - ARTISTA */
-.scroll-box {
+/* CONTAINER DE SCROLL - ARTISTA E MÚSICA */
+.scroll-container {
     position: relative;
     overflow: hidden;
-    padding: 12px 20px;
-    font-size: 13px;
-    min-height: 24px;
-    display: flex;
-    align-items: center;
+    padding: 12px 0;
+    height: auto;
+    min-height: 28px;
 }
 
 /* fade lateral */
-.scroll-box::before,
-.scroll-box::after {
+.scroll-container::before,
+.scroll-container::after {
     content: "";
     position: absolute;
     top: 0;
-    width: 30px;
+    width: 35px;
     height: 100%;
     z-index: 2;
 }
 
-.scroll-box::before {
+.scroll-container::before {
     left: 0;
     background: linear-gradient(to right, #0d0d0d, transparent);
 }
 
-.scroll-box::after {
+.scroll-container::after {
     right: 0;
     background: linear-gradient(to left, #0d0d0d, transparent);
 }
@@ -106,14 +103,18 @@ body {
 .scroll-text {
     display: inline-block;
     white-space: nowrap;
-    padding: 0 10px;
+    padding: 0 20px;
     animation: scrollText linear infinite;
-    min-width: max-content;
+    font-size: 13px;
 }
 
 @keyframes scrollText {
-    from { transform: translateX(100%); }
-    to { transform: translateX(-100%); }
+    0% { 
+        transform: translateX(100%); 
+    }
+    100% { 
+        transform: translateX(-100%); 
+    }
 }
 
 /* PLAYER */
@@ -223,15 +224,15 @@ body {
 <div id="sponsorTrack">
 
 <a href="https://www.coca-cola.com" target="_blank" class="active">
-<img src="https://upload.wikimedia.org/wikipedia/commons/thumb/c/ce/Coca-Cola_logo.svg/320px-Coca-Cola_logo.svg.png" alt="Coca-Cola">
+<img src="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 320 320'%3E%3Crect fill='%23F40000' width='320' height='320'/%3E%3Ctext x='160' y='180' font-size='80' font-weight='bold' fill='white' text-anchor='middle' font-family='Arial'%3ECoca%3C/text%3E%3Ctext x='160' y='260' font-size='80' font-weight='bold' fill='white' text-anchor='middle' font-family='Arial'%3ECola%3C/text%3E%3C/svg%3E" alt="Coca-Cola" style="filter: brightness(1.5);">
 </a>
 
 <a href="https://www.burgerking.com" target="_blank">
-<img src="https://upload.wikimedia.org/wikipedia/commons/thumb/7/79/Burger_King_logo.svg/320px-Burger_King_logo.svg.png" alt="Burger King">
+<img src="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 320 320'%3E%3Crect fill='%23FFC72C' width='320' height='320'/%3E%3Ctext x='160' y='180' font-size='60' font-weight='bold' fill='%23EC1C24' text-anchor='middle' font-family='Arial'%3EBURGER%3C/text%3E%3Ctext x='160' y='260' font-size='60' font-weight='bold' fill='%23EC1C24' text-anchor='middle' font-family='Arial'%3EKING%3C/text%3E%3C/svg%3E" alt="Burger King" style="filter: brightness(1.5);">
 </a>
 
 <a href="https://www.mcdonalds.com" target="_blank">
-<img src="https://upload.wikimedia.org/wikipedia/commons/thumb/4/4e/McDonald%27s_logo.svg/320px-McDonald%27s_logo.svg.png" alt="McDonald's">
+<img src="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 320 320'%3E%3Crect fill='%23DA291C' width='320' height='320'/%3E%3Ctext x='160' y='200' font-size='100' font-weight='bold' fill='%23FFC72C' text-anchor='middle' font-family='Arial'%3EM%3C/text%3E%3C/svg%3E" alt="McDonald's" style="filter: brightness(1.5);">
 </a>
 
 </div>
@@ -239,11 +240,11 @@ body {
 
 <div class="cover"></div>
 
-<div class="scroll-box">
+<div class="scroll-container">
 <span id="artistText" class="scroll-text">Carregando artista...</span>
 </div>
 
-<div class="scroll-box">
+<div class="scroll-container">
 <span id="titleText" class="scroll-text">Carregando música...</span>
 </div>
 
@@ -307,9 +308,9 @@ const titleEl=document.getElementById("titleText");
 artistEl.innerText=artist;
 titleEl.innerText=title;
 
-/* velocidade proporcional com mínimo */
-const artistDuration = Math.max(5, artist.length * 0.35);
-const titleDuration = Math.max(5, title.length * 0.35);
+/* velocidade proporcional - mais lento para textos curtos */
+const artistDuration = Math.max(8, artist.length * 0.3);
+const titleDuration = Math.max(8, title.length * 0.3);
 
 artistEl.style.animationDuration = artistDuration + "s";
 titleEl.style.animationDuration = titleDuration + "s";
@@ -349,3 +350,4 @@ track.style.animationDuration = duration + "s";
 
 </body>
 </html>
+
