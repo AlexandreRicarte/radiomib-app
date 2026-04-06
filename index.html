@@ -20,7 +20,6 @@ body {
 .container {
     width: 100%;
     max-width: 420px;
-    min-height: 100vh;
     background: #0b0b0b;
     color: white;
 }
@@ -46,7 +45,6 @@ body {
 
 #sponsorTrack img {
     height: 26px;
-    filter: brightness(0) invert(1);
 }
 
 @keyframes sponsorMove {
@@ -60,18 +58,26 @@ body {
     background: url('https://raw.githubusercontent.com/AlexandreRicarte/logo-mib/main/logoboneconovo.png') center/contain no-repeat;
 }
 
-/* ÁREA */
 .section {
     padding: 20px;
     text-align: center;
 }
 
-/* TEXTO (SEM QUEBRAR CENTOVA) */
-.scroll-text {
+/* TEXTOS */
+.scroll-area {
     overflow: hidden;
-    white-space: nowrap;
     padding: 0 15px;
-    box-sizing: border-box;
+}
+
+.scroll-text {
+    display: inline-block;
+    white-space: nowrap;
+    animation: scrollText 12s linear infinite;
+}
+
+@keyframes scrollText {
+    from { transform: translateX(100%); }
+    to { transform: translateX(-100%); }
 }
 
 /* BOTÕES */
@@ -112,7 +118,6 @@ body {
 
 .icon-card img {
     width: 28px;
-    filter: invert(1);
 }
 
 /* NEWS */
@@ -138,7 +143,6 @@ body {
 .footer {
     text-align: center;
     padding: 15px;
-    font-size: 12px;
 }
 </style>
 </head>
@@ -151,10 +155,10 @@ body {
 <div class="header">
   <div id="sponsorWrapper">
     <div id="sponsorTrack">
-      <!-- LOGOS FUNCIONANDO -->
-      <img src="https://cdn.jsdelivr.net/gh/simple-icons/simple-icons/icons/brazil.svg">
-      <img src="https://cdn.jsdelivr.net/gh/simple-icons/simple-icons/icons/bank.svg">
-      <img src="https://cdn.jsdelivr.net/gh/simple-icons/simple-icons/icons/government.svg">
+      <!-- IMAGENS QUE FUNCIONAM -->
+      <img src="https://upload.wikimedia.org/wikipedia/commons/0/05/Brazil_flag_300.png">
+      <img src="https://upload.wikimedia.org/wikipedia/commons/thumb/5/5a/Logo_Caixa_Econ%C3%B4mica_Federal.svg/320px-Logo_Caixa_Econ%C3%B4mica_Federal.svg.png">
+      <img src="https://upload.wikimedia.org/wikipedia/commons/thumb/7/73/Governo_do_Cear%C3%A1_logo.svg/320px-Governo_do_Cear%C3%A1_logo.svg.png">
     </div>
   </div>
 </div>
@@ -163,13 +167,13 @@ body {
 
 <div class="section">
 
-<!-- CENTOVA ORIGINAL (FUNCIONA) -->
-<div class="cc_streaminfo_artist scroll-text">
-  <span id="artistText">Carregando artista...</span>
+<!-- CENTOVA -->
+<div class="scroll-area">
+  <span id="artistText" class="scroll-text">Carregando artista...</span>
 </div>
 
-<div class="cc_streaminfo_song scroll-text">
-  <span id="titleText">Carregando música...</span>
+<div class="scroll-area">
+  <span id="titleText" class="scroll-text">Carregando música...</span>
 </div>
 
 <!-- PLAYER -->
@@ -212,7 +216,7 @@ body {
 <!-- PLAYER -->
 <audio id="radioPlayer"></audio>
 
-<!-- CENTOVA -->
+<!-- CENTOVA (ESSENCIAL) -->
 <span id="ccArtist" class="cc_streaminfo" data-type="trackartist" data-username="radiomib" style="display:none"></span>
 <span id="ccTitle" class="cc_streaminfo" data-type="tracktitle" data-username="radiomib" style="display:none"></span>
 
@@ -229,6 +233,17 @@ function playRadio() {
 function stopRadio() {
     player.pause();
 }
+
+/* 🔥 ESSA PARTE QUE ESTAVA FALTANDO */
+function atualizarTexto() {
+    document.getElementById("artistText").innerText =
+        document.getElementById("ccArtist").innerText || "—";
+
+    document.getElementById("titleText").innerText =
+        document.getElementById("ccTitle").innerText || "—";
+}
+
+setInterval(atualizarTexto, 2000);
 
 /* LINKS */
 function openInsta() {
