@@ -65,11 +65,44 @@ body {
     background: url('https://raw.githubusercontent.com/AlexandreRicarte/logo-mib/main/logoboneconovo.png') center/contain no-repeat;
 }
 
-/* INFO */
-.info {
-    padding: 10px 20px;
+/* TEXTO COM SCROLL */
+.scroll-box {
+    position: relative;
+    overflow: hidden;
+    padding: 8px 20px;
     font-size: 13px;
-    opacity: 0.85;
+}
+
+/* fade lateral */
+.scroll-box::before,
+.scroll-box::after {
+    content: "";
+    position: absolute;
+    top: 0;
+    width: 25px;
+    height: 100%;
+    z-index: 2;
+}
+
+.scroll-box::before {
+    left: 0;
+    background: linear-gradient(to right, #0d0d0d, transparent);
+}
+
+.scroll-box::after {
+    right: 0;
+    background: linear-gradient(to left, #0d0d0d, transparent);
+}
+
+.scroll-text {
+    display: inline-block;
+    white-space: nowrap;
+    animation: scrollText linear infinite;
+}
+
+@keyframes scrollText {
+    from { transform: translateX(100%); }
+    to { transform: translateX(-100%); }
 }
 
 /* PLAYER */
@@ -149,7 +182,6 @@ body {
 
 <div class="container">
 
-<!-- HEADER -->
 <div class="header">
 <div id="sponsorTrack">
 
@@ -170,8 +202,13 @@ body {
 
 <div class="cover"></div>
 
-<div class="info" id="artistText">Carregando artista...</div>
-<div class="info" id="titleText">Carregando música...</div>
+<div class="scroll-box">
+<span id="artistText" class="scroll-text">Carregando artista...</span>
+</div>
+
+<div class="scroll-box">
+<span id="titleText" class="scroll-text">Carregando música...</span>
+</div>
 
 <div class="controls">
 <button class="btn" onclick="playRadio()">▶</button>
@@ -222,16 +259,25 @@ function stopRadio(){
 player.pause();
 }
 
-/* CENTOVA (INTACTO) */
-setInterval(()=>{
-document.getElementById("artistText").innerText =
-document.getElementById("ccArtist").innerText || "—";
+/* ATUALIZA TEXTO + VELOCIDADE DINÂMICA */
+function atualizarTexto(){
+const artist=document.getElementById("ccArtist").innerText || "—";
+const title=document.getElementById("ccTitle").innerText || "—";
 
-document.getElementById("titleText").innerText =
-document.getElementById("ccTitle").innerText || "—";
-},2000);
+const artistEl=document.getElementById("artistText");
+const titleEl=document.getElementById("titleText");
 
-/* PATROCINADORES */
+artistEl.innerText=artist;
+titleEl.innerText=title;
+
+/* velocidade proporcional */
+artistEl.style.animationDuration = (artist.length * 0.4) + "s";
+titleEl.style.animationDuration = (title.length * 0.4) + "s";
+}
+
+setInterval(atualizarTexto,2000);
+
+/* patrocinadores */
 const sponsors=document.querySelectorAll("#sponsorTrack a");
 let s=0;
 setInterval(()=>{
@@ -240,12 +286,12 @@ s=(s+1)%sponsors.length;
 sponsors[s].classList.add("active");
 },4000);
 
-/* LINKS */
+/* links */
 function openInsta(){window.open("https://www.instagram.com/radiomibprodutora/")}
 function openThreads(){window.open("https://www.threads.net/@radiomibprodutora")}
 function participar(){window.open("https://wa.me/5585988148344")}
 
-/* NEWS CONTÍNUO */
+/* news */
 const noticias=[
 "Música brasileira em crescimento global",
 "Turismo no Ceará bate recordes",
