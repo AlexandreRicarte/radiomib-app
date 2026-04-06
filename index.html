@@ -25,12 +25,29 @@ body {
     color: white;
 }
 
+/* TOPO COM PATROCINADORES */
 .header {
-    padding: 18px;
-    text-align: center;
-    font-weight: bold;
-    letter-spacing: 2px;
+    padding: 15px;
     background: linear-gradient(90deg, #ED2129, #ff7a00);
+    overflow: hidden;
+}
+
+#sponsorTrack {
+    display: flex;
+    align-items: center;
+    gap: 40px;
+    animation: sponsorMove 12s linear infinite;
+}
+
+#sponsorTrack img {
+    height: 28px;
+    filter: brightness(0) invert(1);
+    opacity: 0.9;
+}
+
+@keyframes sponsorMove {
+    from { transform: translateX(100%); }
+    to { transform: translateX(-100%); }
 }
 
 .cover {
@@ -102,7 +119,6 @@ body {
     display: flex;
     flex-direction: column;
     align-items: center;
-    justify-content: center;
     gap: 8px;
 }
 
@@ -159,7 +175,14 @@ body {
 
 <div class="container">
 
-<div class="header">RÁDIO MIB</div>
+<!-- TOPO COM LOGOS -->
+<div class="header">
+  <div id="sponsorTrack">
+    <img src="https://upload.wikimedia.org/wikipedia/commons/thumb/7/73/Governo_do_Cear%C3%A1_logo.svg/512px-Governo_do_Cear%C3%A1_logo.svg.png">
+    <img src="https://upload.wikimedia.org/wikipedia/commons/thumb/1/1b/Logomarca_do_Governo_Federal_do_Brasil_%282023%29.svg/512px-Logomarca_do_Governo_Federal_do_Brasil_%282023%29.svg.png">
+    <img src="https://upload.wikimedia.org/wikipedia/commons/thumb/5/5a/Logo_Caixa_Econ%C3%B4mica_Federal.svg/512px-Logo_Caixa_Econ%C3%B4mica_Federal.svg.png">
+  </div>
+</div>
 
 <div class="cover"></div>
 
@@ -194,7 +217,7 @@ body {
 
 </div>
 
-<!-- MINI TELA -->
+<!-- NEWS -->
 <div id="newsDisplay">
   <div class="news-label">LIVE NEWS</div>
   <div id="newsTicker">Carregando notícias...</div>
@@ -266,7 +289,7 @@ function setupObservers() {
 
 setupObservers();
 
-/* NEWS ESTILO MONITOR */
+/* NEWS ROTATIVO */
 const noticias = [
 "🎵 Música brasileira domina o streaming global",
 "🌴 Ceará cresce como destino turístico em destaque",
