@@ -3,8 +3,7 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>Rádio MIB - Painel Indoor</title>
-
+<title>Rádio MIB - Painel Indoor Ultra</title>
 <link href="https://fonts.googleapis.com/css?family=Inter:400,600&display=swap" rel="stylesheet">
 
 <style>
@@ -16,7 +15,7 @@ body {
     overflow-x: hidden;
 }
 
-/* PLAYER */
+/* PLAYER FIXO */
 .player-bar {
     position: fixed;
     top: 0;
@@ -28,7 +27,8 @@ body {
     display: flex;
     align-items: center;
     padding: 10px 20px;
-    z-index: 10;
+    z-index: 20;
+    box-shadow: 0 2px 10px rgba(0,0,0,0.5);
 }
 
 .logo {
@@ -60,13 +60,14 @@ body {
     cursor: pointer;
 }
 
-/* HERO (notícia destaque) */
+/* HERO rotativo */
 .hero {
-    margin: 70px auto 0 auto;
+    margin: 70px auto 20px auto;
     max-width: 1920px;
     height: 50vh;
     position: relative;
     overflow: hidden;
+    border-radius: 6px;
 }
 
 .hero img {
@@ -74,6 +75,9 @@ body {
     height: 100%;
     object-fit: cover;
     display: block;
+    transition: opacity 1s ease-in-out;
+    position: absolute;
+    top:0; left:0;
 }
 
 .hero-text {
@@ -84,12 +88,13 @@ body {
     width: 100%;
     box-sizing: border-box;
     background: linear-gradient(to top, rgba(0,0,0,0.9), transparent);
+    z-index: 10;
 }
 
-/* GRID */
+/* GRID de notícias */
 .news-container {
     max-width: 1920px;
-    margin: 20px auto;
+    margin: 0 auto 30px auto;
     display: grid;
     grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
     gap: 15px;
@@ -100,6 +105,7 @@ body {
     height: 200px;
     cursor: pointer;
     overflow: hidden;
+    border-radius: 4px;
 }
 
 .news-card img {
@@ -107,6 +113,11 @@ body {
     height: 100%;
     object-fit: cover;
     display: block;
+    transition: transform 0.3s ease;
+}
+
+.news-card:hover img {
+    transform: scale(1.05);
 }
 
 .news-overlay {
@@ -126,7 +137,6 @@ body {
 }
 </style>
 </head>
-
 <body>
 
 <!-- PLAYER -->
@@ -146,11 +156,11 @@ body {
 
 <!-- HERO -->
 <div class="hero" id="hero">
-<img id="heroImg" src="https://source.unsplash.com/1200x600/?music">
+<img id="heroImg" src="https://source.unsplash.com/1200x600/?music" style="opacity:1">
 <div class="hero-text" id="heroText">Carregando notícias...</div>
 </div>
 
-<!-- GRID -->
+<!-- GRID DE NOTÍCIAS -->
 <div id="newsContainer" class="news-container"></div>
 
 <audio id="radioPlayer"></audio>
@@ -167,15 +177,17 @@ const artistText = document.getElementById('artistText');
 const titleText = document.getElementById('titleText');
 const heroImg = document.getElementById('heroImg');
 const heroText = document.getElementById('heroText');
+const newsContainer = document.getElementById('newsContainer');
 
+let noticias = [];
+let heroIndex = 0;
+
+/* PLAYER */
 function playRadio(){
     player.src="https://r10.ciclano.io/proxy/radiomib/stream";
     player.play().catch(()=>{});
 }
-
-function stopRadio(){
-    player.pause();
-}
+function stopRadio(){ player.pause(); }
 
 /* METADATA */
 setInterval(()=>{
@@ -183,7 +195,7 @@ setInterval(()=>{
     titleText.innerText = document.getElementById('ccTitle').innerText || "—";
 },2000);
 
-/* RSS FEEDS */
+/* CARREGAR RSS */
 const feeds = [
     "https://news.google.com/rss/search?q=música",
     "https://news.google.com/rss/search?q=turismo",
@@ -191,67 +203,60 @@ const feeds = [
     "https://news.google.com/rss/search?q=ciência"
 ];
 
-let noticias = [];
-let index = 0;
-
 async function carregarNoticias(){
-    const container = document.getElementById("newsContainer");
-
     for(let feed of feeds){
         try{
             const res = await fetch("https://api.allorigins.win/get?url="+encodeURIComponent(feed));
             const data = await res.json();
-
             const parser = new DOMParser();
             const xml = parser.parseFromString(data.contents,"text/xml");
 
             xml.querySelectorAll("item").forEach(item=>{
-                // tenta pegar thumbnail real do RSS
                 let media = item.querySelector("media\\:thumbnail, thumbnail");
-                let imgUrl = media ? media.getAttribute('url') : null;
-                if(!imgUrl) imgUrl = `https://source.unsplash.com/400x300/?news`;
+                let imgUrl = media ? media.getAttribute('url') : `https://source.unsplash.com/400x300/?news`;
 
                 noticias.push({
-                    title: item.querySelector("title")?.textContent,
-                    link: item.querySelector("link")?.textContent,
+                    title: item.querySelector("title")?.textContent || "Sem título",
+                    link: item.querySelector("link")?.textContent || "#",
                     img: imgUrl
                 });
             });
-
-        }catch(e){
-            console.log(e);
-        }
+        }catch(e){ console.log(e); }
     }
 
     renderNoticias();
-    rotacionarHero();
+    iniciarHero();
 }
 
+/* GRID DE NOTÍCIAS */
 function renderNoticias(){
-    const container = document.getElementById("newsContainer");
-    container.innerHTML = "";
+    newsContainer.innerHTML = "";
     noticias.slice(0,12).forEach(n=>{
         const card = document.createElement("div");
-        card.className="news-card";
+        card.className = "news-card";
         card.innerHTML = `
             <img src="${n.img}" onerror="this.src='https://source.unsplash.com/400x300/?news'">
             <div class="news-overlay">${n.title}</div>
         `;
         card.onclick = ()=>window.open(n.link);
-        container.appendChild(card);
+        newsContainer.appendChild(card);
     });
 }
 
-/* ROTAÇÃO HERO (TV style) */
-function rotacionarHero(){
+/* HERO rotativo */
+function iniciarHero(){
+    if(noticias.length===0) return;
     setInterval(()=>{
-        if(noticias.length===0) return;
+        const n = noticias[heroIndex];
+        // transição suave
+        heroImg.style.opacity = 0;
+        setTimeout(()=>{
+            heroImg.src = n.img || 'https://source.unsplash.com/1200x600/?music';
+            heroText.innerText = n.title;
+            heroImg.style.opacity = 1;
+        },500);
 
-        const n = noticias[index];
-        heroText.innerText = n.title;
-        heroImg.src = n.img || "https://source.unsplash.com/1200x600/?music";
-
-        index = (index + 1) % noticias.length;
+        heroIndex = (heroIndex + 1) % noticias.length;
     },5000);
 }
 
@@ -260,6 +265,5 @@ setTimeout(playRadio,3000);
 
 carregarNoticias();
 </script>
-
 </body>
 </html>
