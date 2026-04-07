@@ -54,17 +54,18 @@ body {
   cursor: pointer;
 }
 
-#track {
-  max-width: 200px;
-  overflow: hidden;
-  white-space: nowrap;
+.live {
+  background: red;
+  padding: 3px 6px;
+  font-size: 12px;
+  border-radius: 3px;
 }
 
-/* GRID PRINCIPAL */
+/* GRID */
 .container {
   display: grid;
   grid-template-columns: repeat(4, 1fr);
-  gap: 5px;
+  gap: 6px;
   padding: 10px;
   height: calc(100vh - 80px);
 }
@@ -81,6 +82,7 @@ body {
   object-fit: cover;
 }
 
+/* HEADER DO CARD */
 .source {
   position: absolute;
   top: 0;
@@ -94,6 +96,7 @@ body {
 .source.uol { background: #ffcc00; color: black; }
 .source.folha { background: #ddd; color: black; }
 
+/* TEXTO */
 .headline {
   position: absolute;
   bottom: 0;
@@ -102,16 +105,6 @@ body {
   font-size: 18px;
   background: linear-gradient(transparent, rgba(0,0,0,0.9));
 }
-
-/* AO VIVO */
-.live {
-  background: red;
-  padding: 3px 6px;
-  margin-left: 10px;
-  font-size: 12px;
-  border-radius: 3px;
-}
-
 </style>
 </head>
 
@@ -119,12 +112,10 @@ body {
 
 <div class="top-bar">
   <img src="logo.png" class="logo">
-
   <div class="title">RÁDIO MIB DIGITAL BROADCAST</div>
 
   <div class="player">
     <button id="playBtn">▶</button>
-    <span id="track">AO VIVO</span>
     <span class="live">AO VIVO</span>
   </div>
 </div>
@@ -136,6 +127,8 @@ body {
 <script>
 const STREAM = "https://r10.ciclano.io/proxy/radiomib/stream";
 const RSS = "https://api.rss2json.com/v1/api.json?rss_url=https://news.google.com/rss?hl=pt-BR&gl=BR&ceid=BR:pt-419";
+
+const FALLBACK = "fallback.jpg";
 
 const sources = ["g1", "globo", "uol", "folha"];
 
@@ -156,34 +149,42 @@ btn.onclick = () => {
 };
 
 async function loadNews() {
-  const res = await fetch(RSS);
-  const data = await res.json();
+  try {
+    const res = await fetch(RSS);
+    const data = await res.json();
 
-  const news = data.items.slice(0, 4);
-  const grid = document.getElementById("grid");
+    const news = data.items.slice(0, 4);
+    const grid = document.getElementById("grid");
 
-  grid.innerHTML = "";
+    grid.innerHTML = "";
 
-  news.forEach((item, i) => {
-    const card = document.createElement("div");
-    card.className = "card";
+    news.forEach((item, i) => {
+      const card = document.createElement("div");
+      card.className = "card";
 
-    const srcClass = sources[i % sources.length];
+      const srcClass = sources[i % sources.length];
 
-    card.innerHTML = `
-      <div class="source ${srcClass}">
-        ${srcClass.toUpperCase()}
-      </div>
+      const imgUrl = item.thumbnail || FALLBACK;
 
-      <img src="${item.thumbnail || 'https://via.placeholder.com/600'}">
+      card.innerHTML = `
+        <div class="source ${srcClass}">
+          ${srcClass.toUpperCase()}
+        </div>
 
-      <div class="headline">
-        ${item.title}
-      </div>
-    `;
+        <img src="${imgUrl}"
+             onerror="this.src='${FALLBACK}'">
 
-    grid.appendChild(card);
-  });
+        <div class="headline">
+          ${item.title}
+        </div>
+      `;
+
+      grid.appendChild(card);
+    });
+
+  } catch (e) {
+    console.log("Erro RSS:", e);
+  }
 }
 
 loadNews();
