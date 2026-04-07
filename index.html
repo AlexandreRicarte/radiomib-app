@@ -4,7 +4,7 @@
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 
-<title>MIB Indoor</title>
+<title>MIB Indoor PRO</title>
 
 <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600;700&display=swap" rel="stylesheet">
 
@@ -14,6 +14,7 @@ body {
   font-family: 'Inter', sans-serif;
   background: #0a0a0a;
   color: white;
+  overflow: hidden;
 }
 
 /* HEADER */
@@ -43,13 +44,12 @@ header {
   border: none;
   color: white;
   padding: 10px 14px;
-  font-size: 16px;
   cursor: pointer;
   border-radius: 6px;
 }
 
 .now-playing {
-  max-width: 300px;
+  max-width: 320px;
   overflow: hidden;
   white-space: nowrap;
 }
@@ -68,13 +68,14 @@ header {
 /* HERO */
 #hero {
   position: relative;
-  height: 50vh;
+  height: 45vh;
 }
 
 #hero img {
   width: 100%;
   height: 100%;
   object-fit: cover;
+  transition: opacity 0.5s;
 }
 
 .hero-overlay {
@@ -85,15 +86,17 @@ header {
 }
 
 .hero-overlay h1 {
-  font-size: 34px;
+  font-size: 32px;
 }
 
 /* GRID */
 #grid {
   display: grid;
-  grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
-  padding: 20px;
-  gap: 20px;
+  grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
+  padding: 15px;
+  gap: 15px;
+  height: calc(55vh - 60px);
+  overflow: hidden;
 }
 
 .card {
@@ -104,28 +107,47 @@ header {
 }
 
 .card:hover {
-  transform: scale(1.04);
+  transform: scale(1.03);
 }
 
 .card img {
   width: 100%;
-  height: 150px;
+  height: 120px;
   object-fit: cover;
 }
 
 .card h3 {
   padding: 10px;
-  font-size: 16px;
+  font-size: 14px;
+}
+
+/* TICKER */
+#ticker {
+  position: absolute;
+  bottom: 0;
+  width: 100%;
+  background: #ED2129;
+  color: white;
+  padding: 10px 0;
+  overflow: hidden;
+}
+
+#ticker-text {
+  display: inline-block;
+  white-space: nowrap;
+  padding-left: 100%;
+  animation: tickerMove 30s linear infinite;
+  font-weight: 600;
+}
+
+@keyframes tickerMove {
+  0% { transform: translateX(0); }
+  100% { transform: translateX(-100%); }
 }
 
 @media (max-width: 768px) {
-  #hero {
-    height: 35vh;
-  }
-
-  .hero-overlay h1 {
-    font-size: 22px;
-  }
+  #hero { height: 35vh; }
+  .hero-overlay h1 { font-size: 20px; }
 }
 </style>
 </head>
@@ -156,15 +178,18 @@ header {
 
 </main>
 
+<div id="ticker">
+  <div id="ticker-text">Carregando notícias...</div>
+</div>
+
 <audio id="radio" autoplay></audio>
 
 <script>
-// CONFIG
 const CONFIG = {
   radioStream: "https://r10.ciclano.io/proxy/radiomib/stream",
   rss: "https://api.rss2json.com/v1/api.json?rss_url=https://news.google.com/rss?hl=pt-BR&gl=BR&ceid=BR:pt-419",
   heroRotation: 5000,
-  maxNews: 9
+  maxNews: 10
 };
 
 let news = [];
@@ -176,10 +201,7 @@ const btn = document.getElementById("playBtn");
 
 audio.src = CONFIG.radioStream;
 
-// tentativa de autoplay (TV geralmente permite)
-audio.play().catch(() => {
-  console.log("Autoplay bloqueado até interação");
-});
+audio.play().catch(() => {});
 
 btn.onclick = () => {
   if (audio.paused) {
@@ -201,6 +223,7 @@ async function loadNews() {
 
     renderHero();
     renderGrid();
+    renderTicker();
     startHeroRotation();
 
   } catch (e) {
@@ -217,8 +240,7 @@ function renderHero() {
   document.getElementById("hero-img").src =
     item.thumbnail || "https://via.placeholder.com/1280x720";
 
-  document.getElementById("hero-title").innerText =
-    item.title || "";
+  document.getElementById("hero-title").innerText = item.title;
 }
 
 function startHeroRotation() {
@@ -248,6 +270,15 @@ function renderGrid() {
 
     grid.appendChild(card);
   });
+}
+
+// TICKER
+function renderTicker() {
+  const ticker = document.getElementById("ticker-text");
+
+  const headlines = news.map(n => n.title).join("   •   ");
+
+  ticker.innerText = headlines;
 }
 
 // START
