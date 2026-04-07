@@ -1,10 +1,20 @@
+<!DOCTYPE html>
+<html lang="pt-br">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+<title>Rádio MIB - Painel Indoor</title>
+
+<link href="https://fonts.googleapis.com/css?family=Inter:400,600&display=swap" rel="stylesheet">
+
 <style>
 body {
     margin: 0;
     font-family: 'Inter', sans-serif;
     background: #000;
     color: white;
-    overflow-x: hidden; /* Evita barra horizontal */
+    overflow-x: hidden;
 }
 
 /* PLAYER */
@@ -12,7 +22,7 @@ body {
     position: fixed;
     top: 0;
     width: 100%;
-    max-width: 1920px; /* limite de tela grande */
+    max-width: 1920px;
     margin: 0 auto;
     height: 70px;
     background: #111;
@@ -116,3 +126,137 @@ body {
     .news-container { grid-template-columns: 1fr; }
 }
 </style>
+</head>
+
+<body>
+
+<!-- PLAYER -->
+<div class="player-bar">
+<img class="logo" src="https://raw.githubusercontent.com/AlexandreRicarte/logo-mib/main/logoboneconovo.png">
+
+<div class="track-info">
+<span id="artistText" class="scroll-text">Carregando artista...</span><br>
+<span id="titleText" class="scroll-text">Carregando música...</span>
+</div>
+
+<div class="controls">
+<button onclick="playRadio()">▶</button>
+<button onclick="stopRadio()">■</button>
+</div>
+</div>
+
+<!-- HERO -->
+<div class="hero" id="hero">
+<img id="heroImg" src="https://source.unsplash.com/1200x600/?music">
+<div class="hero-text" id="heroText">Carregando notícias...</div>
+</div>
+
+<!-- GRID -->
+<div id="newsContainer" class="news-container"></div>
+
+<audio id="radioPlayer"></audio>
+
+<!-- METADATA -->
+<span id="ccArtist" class="cc_streaminfo" data-type="trackartist" data-username="radiomib" style="display:none"></span>
+<span id="ccTitle" class="cc_streaminfo" data-type="tracktitle" data-username="radiomib" style="display:none"></span>
+
+<script src="https://r10.ciclano.io:2199/system/streaminfo.js"></script>
+
+<script>
+const player = document.getElementById('radioPlayer');
+const artistText = document.getElementById('artistText');
+const titleText = document.getElementById('titleText');
+const heroImg = document.getElementById('heroImg');
+const heroText = document.getElementById('heroText');
+
+function playRadio(){
+    player.src="https://r10.ciclano.io/proxy/radiomib/stream";
+    player.play().catch(()=>{});
+}
+
+function stopRadio(){
+    player.pause();
+}
+
+/* METADATA */
+setInterval(()=>{
+    artistText.innerText = document.getElementById('ccArtist').innerText || "—";
+    titleText.innerText = document.getElementById('ccTitle').innerText || "—";
+},2000);
+
+/* RSS FEEDS */
+const feeds = [
+    "https://news.google.com/rss/search?q=música",
+    "https://news.google.com/rss/search?q=turismo",
+    "https://news.google.com/rss/search?q=viagem",
+    "https://news.google.com/rss/search?q=ciência"
+];
+
+let noticias = [];
+let index = 0;
+
+async function carregarNoticias(){
+    const container = document.getElementById("newsContainer");
+
+    for(let feed of feeds){
+        try{
+            const res = await fetch("https://api.allorigins.win/get?url="+encodeURIComponent(feed));
+            const data = await res.json();
+
+            const parser = new DOMParser();
+            const xml = parser.parseFromString(data.contents,"text/xml");
+
+            xml.querySelectorAll("item").forEach(item=>{
+                noticias.push({
+                    title: item.querySelector("title")?.textContent,
+                    link: item.querySelector("link")?.textContent,
+                    // se não tiver imagem real, usamos placeholder do Unsplash
+                    img: `https://source.unsplash.com/400x300/?news`
+                });
+            });
+
+        }catch(e){
+            console.log(e);
+        }
+    }
+
+    renderNoticias();
+    rotacionarHero();
+}
+
+function renderNoticias(){
+    const container = document.getElementById("newsContainer");
+    container.innerHTML = "";
+    noticias.slice(0,12).forEach(n=>{
+        const card = document.createElement("div");
+        card.className="news-card";
+        card.innerHTML = `
+            <img src="${n.img}" onerror="this.src='https://source.unsplash.com/400x300/?news'">
+            <div class="news-overlay">${n.title}</div>
+        `;
+        card.onclick = ()=>window.open(n.link);
+        container.appendChild(card);
+    });
+}
+
+/* ROTAÇÃO HERO (TV style) */
+function rotacionarHero(){
+    setInterval(()=>{
+        if(noticias.length===0) return;
+
+        const n = noticias[index];
+        heroText.innerText = n.title;
+        heroImg.src = n.img || "https://source.unsplash.com/1200x600/?music";
+
+        index = (index + 1) % noticias.length;
+    },5000);
+}
+
+/* AUTO PLAY */
+setTimeout(playRadio,3000);
+
+carregarNoticias();
+</script>
+
+</body>
+</html>
