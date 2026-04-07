@@ -1,149 +1,257 @@
 <!DOCTYPE html>
-<html lang="pt-br">
+<html lang="pt-BR">
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>Rádio MIB - Monitor Indoor</title>
-<link href="https://fonts.googleapis.com/css?family=Inter:400,600&display=swap" rel="stylesheet">
+
+<title>MIB Indoor</title>
+
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600;700&display=swap" rel="stylesheet">
+
 <style>
-*{margin:0;padding:0;box-sizing:border-box;}
-body{font-family:'Inter',sans-serif;background:#0a0a0a;color:#fff;display:flex;flex-direction:column;align-items:center;min-height:100vh;overflow-x:hidden;}
-.container{width:95%;max-width:1920px;margin-top:80px;}
-.player-bar{position:fixed;top:0;width:100%;height:70px;background:#111;display:flex;align-items:center;justify-content:space-between;padding:10px 30px;z-index:100;box-shadow:0 2px 10px rgba(0,0,0,0.5);}
-.logo{height:40px;}
-.track-info{flex:1;margin-left:20px;overflow:hidden;}
-.scroll-text{display:inline-block;white-space:nowrap;animation:scroll 12s linear infinite;}
-@keyframes scroll{from{transform:translateX(100%);}to{transform:translateX(-100%);}}
-.controls button{margin-left:10px;padding:8px 14px;background:#ED2129;border:none;color:#fff;cursor:pointer;border-radius:4px;transition:0.2s;}
-.controls button:hover{background:#ff3b4a;}
-.hero{position:relative;width:100%;height:50vh;border-radius:8px;overflow:hidden;margin-bottom:30px;box-shadow:0 4px 20px rgba(0,0,0,0.5);}
-.hero img{width:100%;height:100%;object-fit:cover;position:absolute;top:0;left:0;transition:opacity 1s ease-in-out;}
-.hero-text{position:absolute;bottom:0;padding:25px;font-size:26px;font-weight:600;background:linear-gradient(to top, rgba(0,0,0,0.9), transparent);width:100%;line-height:1.3;}
-.news-container{display:grid;grid-template-columns:repeat(auto-fit,minmax(280px,1fr));gap:20px;}
-.news-card{position:relative;height:200px;border-radius:6px;overflow:hidden;cursor:pointer;box-shadow:0 4px 15px rgba(0,0,0,0.5);transition:transform 0.3s, box-shadow 0.3s;}
-.news-card:hover{transform:scale(1.03);box-shadow:0 6px 20px rgba(0,0,0,0.7);}
-.news-card img{width:100%;height:100%;object-fit:cover;display:block;}
-.news-overlay{position:absolute;bottom:0;width:100%;padding:10px 12px;font-size:14px;background:linear-gradient(to top, rgba(0,0,0,0.85), transparent);}
-@media(max-width:1024px){.hero-text{font-size:22px;padding:20px;}}
-@media(max-width:600px){.container{width:100%;margin-top:70px;}.hero{height:35vh;}.hero-text{font-size:18px;padding:15px;}.news-container{grid-template-columns:1fr;gap:12px;}}
+body {
+  margin: 0;
+  font-family: 'Inter', sans-serif;
+  background: #0a0a0a;
+  color: white;
+}
+
+/* HEADER */
+header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 15px 25px;
+  background: #111;
+}
+
+.logo {
+  font-size: 26px;
+  font-weight: 700;
+  color: #ED2129;
+}
+
+/* PLAYER */
+.radio-player {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+}
+
+#playBtn {
+  background: #ED2129;
+  border: none;
+  color: white;
+  padding: 10px 14px;
+  font-size: 16px;
+  cursor: pointer;
+  border-radius: 6px;
+}
+
+.now-playing {
+  max-width: 300px;
+  overflow: hidden;
+  white-space: nowrap;
+}
+
+#track {
+  display: inline-block;
+  padding-left: 100%;
+  animation: scrollText 12s linear infinite;
+}
+
+@keyframes scrollText {
+  0% { transform: translateX(0); }
+  100% { transform: translateX(-100%); }
+}
+
+/* HERO */
+#hero {
+  position: relative;
+  height: 50vh;
+}
+
+#hero img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+}
+
+.hero-overlay {
+  position: absolute;
+  bottom: 30px;
+  left: 30px;
+  right: 30px;
+}
+
+.hero-overlay h1 {
+  font-size: 34px;
+}
+
+/* GRID */
+#grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+  padding: 20px;
+  gap: 20px;
+}
+
+.card {
+  background: #111;
+  border-radius: 10px;
+  overflow: hidden;
+  transition: transform 0.3s;
+}
+
+.card:hover {
+  transform: scale(1.04);
+}
+
+.card img {
+  width: 100%;
+  height: 150px;
+  object-fit: cover;
+}
+
+.card h3 {
+  padding: 10px;
+  font-size: 16px;
+}
+
+@media (max-width: 768px) {
+  #hero {
+    height: 35vh;
+  }
+
+  .hero-overlay h1 {
+    font-size: 22px;
+  }
+}
 </style>
 </head>
+
 <body>
 
-<div class="player-bar">
-    <img class="logo" src="https://raw.githubusercontent.com/AlexandreRicarte/logo-mib/main/logoboneconovo.png">
-    <div class="track-info">
-        <span id="artistText" class="scroll-text">Carregando artista...</span><br>
-        <span id="titleText" class="scroll-text">Carregando música...</span>
+<header>
+  <div class="logo">MiB</div>
+
+  <div class="radio-player">
+    <button id="playBtn">▶</button>
+    <div class="now-playing">
+      <span id="track">Rádio MiB ao vivo</span>
     </div>
-    <div class="controls">
-        <button onclick="playRadio()">▶</button>
-        <button onclick="stopRadio()">■</button>
-    </div>
-</div>
+  </div>
+</header>
 
-<div class="container">
-    <div class="hero" id="hero">
-        <img id="heroImg" src="https://source.unsplash.com/1200x600/?music" style="opacity:1">
-        <div class="hero-text" id="heroText">Carregando notícias...</div>
-    </div>
+<main>
 
-    <div id="newsContainer" class="news-container"></div>
-</div>
+<section id="hero">
+  <img id="hero-img">
+  <div class="hero-overlay">
+    <h1 id="hero-title"></h1>
+  </div>
+</section>
 
-<audio id="radioPlayer"></audio>
+<section id="grid"></section>
 
-<span id="ccArtist" class="cc_streaminfo" data-type="trackartist" data-username="radiomib" style="display:none"></span>
-<span id="ccTitle" class="cc_streaminfo" data-type="tracktitle" data-username="radiomib" style="display:none"></span>
-<script src="https://r10.ciclano.io:2199/system/streaminfo.js"></script>
+</main>
+
+<audio id="radio" autoplay></audio>
 
 <script>
-const player = document.getElementById('radioPlayer');
-const artistText = document.getElementById('artistText');
-const titleText = document.getElementById('titleText');
-const heroImg = document.getElementById('heroImg');
-const heroText = document.getElementById('heroText');
-const newsContainer = document.getElementById('newsContainer');
+// CONFIG
+const CONFIG = {
+  radioStream: "https://r10.ciclano.io/proxy/radiomib/stream",
+  rss: "https://api.rss2json.com/v1/api.json?rss_url=https://news.google.com/rss?hl=pt-BR&gl=BR&ceid=BR:pt-419",
+  heroRotation: 5000,
+  maxNews: 9
+};
 
-let noticias = [];
+let news = [];
 let heroIndex = 0;
 
-function playRadio(){ player.src="https://r10.ciclano.io/proxy/radiomib/stream"; player.play().catch(()=>{}); }
-function stopRadio(){ player.pause(); }
+// RADIO
+const audio = document.getElementById("radio");
+const btn = document.getElementById("playBtn");
 
-setInterval(()=>{
-    artistText.innerText = document.getElementById('ccArtist').innerText || "—";
-    titleText.innerText = document.getElementById('ccTitle').innerText || "—";
-},2000);
+audio.src = CONFIG.radioStream;
 
-const feeds = [
-    "https://news.google.com/rss/search?q=música",
-    "https://news.google.com/rss/search?q=turismo",
-    "https://news.google.com/rss/search?q=viagem",
-    "https://news.google.com/rss/search?q=ciência"
-];
+// tentativa de autoplay (TV geralmente permite)
+audio.play().catch(() => {
+  console.log("Autoplay bloqueado até interação");
+});
 
-async function carregarNoticias(){
-    noticias = [];
-    for(let feed of feeds){
-        try{
-            const res = await fetch("https://api.allorigins.win/get?url="+encodeURIComponent(feed));
-            const data = await res.json();
-            const parser = new DOMParser();
-            const xml = parser.parseFromString(data.contents,"text/xml");
+btn.onclick = () => {
+  if (audio.paused) {
+    audio.play();
+    btn.innerText = "⏸";
+  } else {
+    audio.pause();
+    btn.innerText = "▶";
+  }
+};
 
-            xml.querySelectorAll("item").forEach(item=>{
-                let media = item.querySelector("media\\:thumbnail, thumbnail");
-                let imgUrl = media ? media.getAttribute('url') : null;
+// LOAD NEWS
+async function loadNews() {
+  try {
+    const res = await fetch(CONFIG.rss);
+    const data = await res.json();
 
-                // se não tem thumbnail, tenta pegar img do description
-                if(!imgUrl){
-                    let desc = item.querySelector("description")?.textContent || "";
-                    let tempDiv = document.createElement("div");
-                    tempDiv.innerHTML = desc;
-                    imgUrl = tempDiv.querySelector("img")?.src || "https://source.unsplash.com/400x300/?news";
-                }
+    news = data.items || [];
 
-                noticias.push({
-                    title: item.querySelector("title")?.textContent || "Sem título",
-                    link: item.querySelector("link")?.textContent || "#",
-                    img: imgUrl
-                });
-            });
-        }catch(e){ console.log("Erro RSS:", e); }
-    }
-    renderNoticias();
-    iniciarHero();
+    renderHero();
+    renderGrid();
+    startHeroRotation();
+
+  } catch (e) {
+    console.log("Erro RSS:", e);
+  }
 }
 
-function renderNoticias(){
-    newsContainer.innerHTML = "";
-    noticias.slice(0,12).forEach(n=>{
-        const card = document.createElement("div");
-        card.className = "news-card";
-        card.innerHTML = `<img src="${n.img}" onerror="this.src='https://source.unsplash.com/400x300/?news'">
-                          <div class="news-overlay">${n.title}</div>`;
-        card.onclick = ()=>window.open(n.link);
-        newsContainer.appendChild(card);
-    });
+// HERO
+function renderHero() {
+  if (!news.length) return;
+
+  const item = news[heroIndex];
+
+  document.getElementById("hero-img").src =
+    item.thumbnail || "https://via.placeholder.com/1280x720";
+
+  document.getElementById("hero-title").innerText =
+    item.title || "";
 }
 
-function iniciarHero(){
-    if(noticias.length===0) return;
-    setInterval(()=>{
-        const n = noticias[heroIndex];
-        heroImg.style.opacity=0;
-        setTimeout(()=>{
-            heroImg.src=n.img || "https://source.unsplash.com/1200x600/?music";
-            heroText.innerText=n.title;
-            heroImg.style.opacity=1;
-        },500);
-        heroIndex=(heroIndex+1)%noticias.length;
-    },5000);
+function startHeroRotation() {
+  setInterval(() => {
+    heroIndex = (heroIndex + 1) % news.length;
+    renderHero();
+  }, CONFIG.heroRotation);
 }
 
-carregarNoticias();
-setTimeout(playRadio,3000);
+// GRID
+function renderGrid() {
+  const grid = document.getElementById("grid");
+  grid.innerHTML = "";
+
+  news.slice(0, CONFIG.maxNews).forEach(item => {
+    const img = item.thumbnail || "https://via.placeholder.com/300x200";
+
+    const card = document.createElement("div");
+    card.className = "card";
+
+    card.innerHTML = `
+      <a href="${item.link}" target="_blank">
+        <img src="${img}" loading="lazy">
+        <h3>${item.title}</h3>
+      </a>
+    `;
+
+    grid.appendChild(card);
+  });
+}
+
+// START
+loadNews();
 </script>
 
 </body>
