@@ -4,7 +4,7 @@
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 
-<title>Rádio MIB - Painel Digital</title>
+<title>Rádio MIB - Painel Indoor</title>
 
 <link href="https://fonts.googleapis.com/css?family=Inter:400,600&display=swap" rel="stylesheet">
 
@@ -12,11 +12,12 @@
 body {
     margin: 0;
     font-family: 'Inter', sans-serif;
-    background: #0a0a0a;
+    background: #000;
     color: white;
+    overflow: hidden;
 }
 
-/* PLAYER FIXO */
+/* PLAYER */
 .player-bar {
     position: fixed;
     top: 0;
@@ -27,7 +28,6 @@ body {
     align-items: center;
     padding: 10px 20px;
     z-index: 10;
-    box-shadow: 0 2px 10px rgba(0,0,0,0.6);
 }
 
 .logo {
@@ -38,12 +38,11 @@ body {
 .track-info {
     flex: 1;
     overflow: hidden;
-    white-space: nowrap;
 }
 
 .scroll-text {
     display: inline-block;
-    animation: scroll 12s linear infinite;
+    animation: scroll 10s linear infinite;
 }
 
 @keyframes scroll {
@@ -60,17 +59,36 @@ body {
     cursor: pointer;
 }
 
-/* GRID NEWS */
+/* HERO (notícia destaque) */
+.hero {
+    margin-top: 70px;
+    height: 50vh;
+    position: relative;
+}
+
+.hero img {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+}
+
+.hero-text {
+    position: absolute;
+    bottom: 0;
+    padding: 20px;
+    font-size: 24px;
+    background: linear-gradient(to top, rgba(0,0,0,0.9), transparent);
+}
+
+/* GRID */
 .news-container {
-    margin-top: 80px;
     display: grid;
     grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
 }
 
 .news-card {
     position: relative;
-    height: 260px;
-    overflow: hidden;
+    height: 200px;
     cursor: pointer;
 }
 
@@ -83,17 +101,14 @@ body {
 .news-overlay {
     position: absolute;
     bottom: 0;
-    width: 100%;
-    padding: 15px;
+    padding: 10px;
+    font-size: 13px;
     background: linear-gradient(to top, rgba(0,0,0,0.9), transparent);
-    font-size: 14px;
 }
 
-/* RESPONSIVO MOBILE */
+/* MOBILE */
 @media(max-width:600px){
-    .news-container {
-        grid-template-columns: 1fr;
-    }
+    .hero { height: 35vh; }
 }
 </style>
 </head>
@@ -102,12 +117,10 @@ body {
 
 <!-- PLAYER -->
 <div class="player-bar">
-
 <img class="logo" src="https://raw.githubusercontent.com/AlexandreRicarte/logo-mib/main/logoboneconovo.png">
 
 <div class="track-info">
-<span id="artistText" class="scroll-text">Carregando artista...</span>
-<br>
+<span id="artistText" class="scroll-text">Carregando artista...</span><br>
 <span id="titleText" class="scroll-text">Carregando música...</span>
 </div>
 
@@ -115,7 +128,12 @@ body {
 <button onclick="playRadio()">▶</button>
 <button onclick="stopRadio()">■</button>
 </div>
+</div>
 
+<!-- HERO -->
+<div class="hero" id="hero">
+<img id="heroImg" src="https://source.unsplash.com/1200x600/?music">
+<div class="hero-text" id="heroText">Carregando notícias...</div>
 </div>
 
 <!-- GRID -->
@@ -123,7 +141,7 @@ body {
 
 <audio id="radioPlayer"></audio>
 
-<!-- CENTOVA -->
+<!-- METADATA -->
 <span id="ccArtist" class="cc_streaminfo" data-type="trackartist" data-username="radiomib" style="display:none"></span>
 <span id="ccTitle" class="cc_streaminfo" data-type="tracktitle" data-username="radiomib" style="display:none"></span>
 
@@ -134,7 +152,7 @@ const player = document.getElementById('radioPlayer');
 
 function playRadio(){
 player.src="https://r10.ciclano.io/proxy/radiomib/stream";
-player.play();
+player.play().catch(()=>{});
 }
 
 function stopRadio(){
@@ -143,20 +161,20 @@ player.pause();
 
 /* METADATA */
 setInterval(()=>{
-document.getElementById("artistText").innerText =
-document.getElementById("ccArtist").innerText || "—";
-
-document.getElementById("titleText").innerText =
-document.getElementById("ccTitle").innerText || "—";
+artistText.innerText = ccArtist.innerText || "—";
+titleText.innerText = ccTitle.innerText || "—";
 },2000);
 
 /* RSS */
 const feeds = [
 "https://news.google.com/rss/search?q=música",
 "https://news.google.com/rss/search?q=turismo",
-"https://news.google.com/rss/search?q=viagens",
+"https://news.google.com/rss/search?q=viagem",
 "https://news.google.com/rss/search?q=ciência"
 ];
+
+let noticias = [];
+let index = 0;
 
 async function carregarNoticias(){
 const container = document.getElementById("newsContainer");
@@ -169,32 +187,58 @@ const data = await res.json();
 const parser = new DOMParser();
 const xml = parser.parseFromString(data.contents,"text/xml");
 
-const items = xml.querySelectorAll("item");
+xml.querySelectorAll("item").forEach(item=>{
+noticias.push({
+title: item.querySelector("title")?.textContent,
+link: item.querySelector("link")?.textContent
+});
+});
 
-items.forEach(item=>{
-const title = item.querySelector("title")?.textContent;
-const link = item.querySelector("link")?.textContent;
+}catch(e){}
+}
 
+renderNoticias();
+rotacionarHero();
+}
+
+function renderNoticias(){
+const container = document.getElementById("newsContainer");
+container.innerHTML = "";
+
+noticias.slice(0,12).forEach(n=>{
 const card = document.createElement("div");
 card.className="news-card";
 
 card.innerHTML = `
-<img src="https://source.unsplash.com/400x300/?news">
-<div class="news-overlay">${title}</div>
+<img src="https://source.unsplash.com/400x300/?entertainment">
+<div class="news-overlay">${n.title}</div>
 `;
 
-card.onclick = ()=>window.open(link);
+card.onclick = ()=>window.open(n.link);
 
 container.appendChild(card);
 });
+}
 
-}catch(e){
-console.log(e);
-}
-}
+/* ROTAÇÃO TIPO TV */
+function rotacionarHero(){
+setInterval(()=>{
+if(noticias.length === 0) return;
+
+const n = noticias[index];
+
+heroText.innerText = n.title;
+heroImg.src = "https://source.unsplash.com/1200x600/?concert";
+
+index = (index + 1) % noticias.length;
+
+},5000);
 }
 
 carregarNoticias();
+
+/* AUTO PLAY */
+setTimeout(playRadio, 3000);
 </script>
 
 </body>
