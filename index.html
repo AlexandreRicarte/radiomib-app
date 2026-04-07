@@ -3,8 +3,7 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-
-<title>MIB Indoor PRO</title>
+<title>Rádio MIB Broadcast</title>
 
 <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600;700&display=swap" rel="stylesheet">
 
@@ -17,190 +16,133 @@ body {
   overflow: hidden;
 }
 
-/* HEADER */
-header {
+/* TOPO */
+.top-bar {
+  background: linear-gradient(to right, #111, #1a1a1a);
+  padding: 10px 20px;
   display: flex;
-  justify-content: space-between;
   align-items: center;
-  padding: 15px 25px;
-  background: #111;
+  gap: 20px;
+  border-bottom: 2px solid #ED2129;
 }
 
 .logo {
-  font-size: 26px;
-  font-weight: 700;
-  color: #ED2129;
+  height: 50px;
+}
+
+.title {
+  font-size: 20px;
+  font-weight: 600;
 }
 
 /* PLAYER */
-.radio-player {
+.player {
+  margin-left: auto;
   display: flex;
   align-items: center;
-  gap: 12px;
+  gap: 10px;
+  background: #222;
+  padding: 8px 12px;
+  border-radius: 6px;
 }
 
 #playBtn {
   background: #ED2129;
   border: none;
   color: white;
-  padding: 10px 14px;
+  padding: 8px 10px;
   cursor: pointer;
-  border-radius: 6px;
 }
 
-.now-playing {
-  max-width: 320px;
+#track {
+  max-width: 200px;
   overflow: hidden;
   white-space: nowrap;
 }
 
-#track {
-  display: inline-block;
-  padding-left: 100%;
-  animation: scrollText 12s linear infinite;
-}
-
-@keyframes scrollText {
-  0% { transform: translateX(0); }
-  100% { transform: translateX(-100%); }
-}
-
-/* HERO */
-#hero {
-  position: relative;
-  height: 45vh;
-}
-
-#hero img {
-  width: 100%;
-  height: 100%;
-  object-fit: cover;
-  transition: opacity 0.5s;
-}
-
-.hero-overlay {
-  position: absolute;
-  bottom: 30px;
-  left: 30px;
-  right: 30px;
-}
-
-.hero-overlay h1 {
-  font-size: 32px;
-}
-
-/* GRID */
-#grid {
+/* GRID PRINCIPAL */
+.container {
   display: grid;
-  grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
-  padding: 15px;
-  gap: 15px;
-  height: calc(55vh - 60px);
-  overflow: hidden;
+  grid-template-columns: repeat(4, 1fr);
+  gap: 5px;
+  padding: 10px;
+  height: calc(100vh - 80px);
 }
 
 .card {
-  background: #111;
-  border-radius: 10px;
+  position: relative;
   overflow: hidden;
-  transition: transform 0.3s;
-}
-
-.card:hover {
-  transform: scale(1.03);
+  background: black;
 }
 
 .card img {
   width: 100%;
-  height: 120px;
+  height: 100%;
   object-fit: cover;
 }
 
-.card h3 {
-  padding: 10px;
-  font-size: 14px;
+.source {
+  position: absolute;
+  top: 0;
+  width: 100%;
+  padding: 8px;
+  font-weight: bold;
 }
 
-/* TICKER */
-#ticker {
+.source.g1 { background: #c4170c; }
+.source.globo { background: #003366; }
+.source.uol { background: #ffcc00; color: black; }
+.source.folha { background: #ddd; color: black; }
+
+.headline {
   position: absolute;
   bottom: 0;
   width: 100%;
-  background: #ED2129;
-  color: white;
-  padding: 10px 0;
-  overflow: hidden;
+  padding: 15px;
+  font-size: 18px;
+  background: linear-gradient(transparent, rgba(0,0,0,0.9));
 }
 
-#ticker-text {
-  display: inline-block;
-  white-space: nowrap;
-  padding-left: 100%;
-  animation: tickerMove 30s linear infinite;
-  font-weight: 600;
+/* AO VIVO */
+.live {
+  background: red;
+  padding: 3px 6px;
+  margin-left: 10px;
+  font-size: 12px;
+  border-radius: 3px;
 }
 
-@keyframes tickerMove {
-  0% { transform: translateX(0); }
-  100% { transform: translateX(-100%); }
-}
-
-@media (max-width: 768px) {
-  #hero { height: 35vh; }
-  .hero-overlay h1 { font-size: 20px; }
-}
 </style>
 </head>
 
 <body>
 
-<header>
-  <div class="logo">MiB</div>
+<div class="top-bar">
+  <img src="logo.png" class="logo">
 
-  <div class="radio-player">
+  <div class="title">RÁDIO MIB DIGITAL BROADCAST</div>
+
+  <div class="player">
     <button id="playBtn">▶</button>
-    <div class="now-playing">
-      <span id="track">Rádio MiB ao vivo</span>
-    </div>
+    <span id="track">AO VIVO</span>
+    <span class="live">AO VIVO</span>
   </div>
-</header>
-
-<main>
-
-<section id="hero">
-  <img id="hero-img">
-  <div class="hero-overlay">
-    <h1 id="hero-title"></h1>
-  </div>
-</section>
-
-<section id="grid"></section>
-
-</main>
-
-<div id="ticker">
-  <div id="ticker-text">Carregando notícias...</div>
 </div>
+
+<div class="container" id="grid"></div>
 
 <audio id="radio" autoplay></audio>
 
 <script>
-const CONFIG = {
-  radioStream: "https://r10.ciclano.io/proxy/radiomib/stream",
-  rss: "https://api.rss2json.com/v1/api.json?rss_url=https://news.google.com/rss?hl=pt-BR&gl=BR&ceid=BR:pt-419",
-  heroRotation: 5000,
-  maxNews: 10
-};
+const STREAM = "https://r10.ciclano.io/proxy/radiomib/stream";
+const RSS = "https://api.rss2json.com/v1/api.json?rss_url=https://news.google.com/rss?hl=pt-BR&gl=BR&ceid=BR:pt-419";
 
-let news = [];
-let heroIndex = 0;
+const sources = ["g1", "globo", "uol", "folha"];
 
-// RADIO
 const audio = document.getElementById("radio");
 const btn = document.getElementById("playBtn");
 
-audio.src = CONFIG.radioStream;
-
+audio.src = STREAM;
 audio.play().catch(() => {});
 
 btn.onclick = () => {
@@ -213,76 +155,39 @@ btn.onclick = () => {
   }
 };
 
-// LOAD NEWS
 async function loadNews() {
-  try {
-    const res = await fetch(CONFIG.rss);
-    const data = await res.json();
+  const res = await fetch(RSS);
+  const data = await res.json();
 
-    news = data.items || [];
-
-    renderHero();
-    renderGrid();
-    renderTicker();
-    startHeroRotation();
-
-  } catch (e) {
-    console.log("Erro RSS:", e);
-  }
-}
-
-// HERO
-function renderHero() {
-  if (!news.length) return;
-
-  const item = news[heroIndex];
-
-  document.getElementById("hero-img").src =
-    item.thumbnail || "https://via.placeholder.com/1280x720";
-
-  document.getElementById("hero-title").innerText = item.title;
-}
-
-function startHeroRotation() {
-  setInterval(() => {
-    heroIndex = (heroIndex + 1) % news.length;
-    renderHero();
-  }, CONFIG.heroRotation);
-}
-
-// GRID
-function renderGrid() {
+  const news = data.items.slice(0, 4);
   const grid = document.getElementById("grid");
+
   grid.innerHTML = "";
 
-  news.slice(0, CONFIG.maxNews).forEach(item => {
-    const img = item.thumbnail || "https://via.placeholder.com/300x200";
-
+  news.forEach((item, i) => {
     const card = document.createElement("div");
     card.className = "card";
 
+    const srcClass = sources[i % sources.length];
+
     card.innerHTML = `
-      <a href="${item.link}" target="_blank">
-        <img src="${img}" loading="lazy">
-        <h3>${item.title}</h3>
-      </a>
+      <div class="source ${srcClass}">
+        ${srcClass.toUpperCase()}
+      </div>
+
+      <img src="${item.thumbnail || 'https://via.placeholder.com/600'}">
+
+      <div class="headline">
+        ${item.title}
+      </div>
     `;
 
     grid.appendChild(card);
   });
 }
 
-// TICKER
-function renderTicker() {
-  const ticker = document.getElementById("ticker-text");
-
-  const headlines = news.map(n => n.title).join("   •   ");
-
-  ticker.innerText = headlines;
-}
-
-// START
 loadNews();
+setInterval(loadNews, 60000);
 </script>
 
 </body>
