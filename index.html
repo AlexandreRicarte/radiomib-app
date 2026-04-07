@@ -6,13 +6,13 @@
 
 <title>Rádio MIB</title>
 
-<link href="https://fonts.googleapis.com/css?family=Inter:400,600,700&display=swap" rel="stylesheet" />
+<link href="https://fonts.googleapis.com/css?family=Comfortaa:700&display=swap" rel="stylesheet" />
 
 <style>
 body {
     margin: 0;
-    font-family: 'Inter', sans-serif;
-    background: #0a0a0a;
+    font-family: 'Comfortaa', sans-serif;
+    background: #000;
     display: flex;
     justify-content: center;
 }
@@ -20,8 +20,9 @@ body {
 .container {
     width: 100%;
     max-width: 420px;
-    background: #0d0d0d;
-    color: #e5e5e5;
+    min-height: 100vh;
+    background: #0b0b0b;
+    color: white;
 }
 
 /* HEADER */
@@ -85,144 +86,109 @@ body {
 
 /* COVER */
 .cover {
-    height: 200px;
+    height: 240px;
     background: url('https://raw.githubusercontent.com/AlexandreRicarte/logo-mib/main/logoboneconovo.png') center/contain no-repeat;
 }
 
-/* CONTAINER DE SCROLL - ARTISTA E MÚSICA */
-.scroll-container {
-    position: relative;
-    overflow: hidden;
-    padding: 8px 0;
-    height: auto;
-    min-height: 28px;
-    width: 100%;
+/* SEÇÃO PRINCIPAL */
+.section {
+    padding: 20px;
+    text-align: center;
 }
 
-/* fade lateral */
-.scroll-container::before,
-.scroll-container::after {
-    content: "";
-    position: absolute;
-    top: 0;
-    width: 40px;
-    height: 100%;
-    z-index: 2;
+.text3d {
+    font-size: 22px;
+    color: #ED2129;
+    margin-bottom: 10px;
+    letter-spacing: 2px;
 }
 
-.scroll-container::before {
-    left: 0;
-    background: linear-gradient(to right, #0d0d0d, transparent);
-}
-
-.scroll-container::after {
-    right: 0;
-    background: linear-gradient(to left, #0d0d0d, transparent);
-}
-
+/* SCROLL TEXT - ARTISTA E MÚSICA */
 .scroll-text {
-    display: inline-block;
+    display: block;
+    overflow: hidden;
     white-space: nowrap;
-    padding: 0 20px;
-    animation: scrollText linear infinite;
-    font-size: 13px;
+    animation: scrollText 10s linear infinite;
+    font-size: 14px;
+    margin: 8px 0;
 }
 
 @keyframes scrollText {
-    0% { 
-        transform: translateX(-100%); 
-    }
-    100% { 
-        transform: translateX(100vw); 
-    }
+    from { transform: translateX(100%); }
+    to { transform: translateX(-100%); }
 }
 
 /* PLAYER */
 .controls {
+    margin-top: 20px;
     display: flex;
     justify-content: center;
-    gap: 25px;
-    padding: 10px;
+    gap: 15px;
 }
 
 .btn {
-    width: 60px;
-    height: 60px;
+    width: 70px;
+    height: 70px;
     border-radius: 50%;
-    border: 1px solid rgba(255,255,255,0.15);
-    background: transparent;
-    color: white;
-    font-size: 18px;
+    border: 3px solid #ED2129;
+    background: rgba(237,33,41,0.1);
     cursor: pointer;
+    color: white;
+    font-size: 20px;
     transition: all 0.3s ease;
 }
 
 .btn:hover {
-    border-color: rgba(255,255,255,0.3);
-    background: rgba(255,255,255,0.05);
+    background: rgba(237,33,41,0.2);
 }
 
 /* REDES */
 .grid {
     display: grid;
-    grid-template-columns: repeat(3,1fr);
-    gap: 10px;
-    padding: 20px;
+    grid-template-columns: 1fr 1fr;
+    gap: 12px;
+    margin-top: 20px;
 }
 
 .card {
-    background: #111;
+    background: #141414;
     padding: 15px;
-    border-radius: 10px;
-    text-align: center;
+    border-radius: 15px;
     cursor: pointer;
-    font-size: 12px;
     transition: all 0.3s ease;
+    font-size: 13px;
 }
 
 .card:hover {
     background: #1a1a1a;
-    border: 1px solid rgba(255,255,255,0.1);
-}
-
-.card img {
-    width: 22px;
-    margin-bottom: 5px;
 }
 
 /* NEWS - ESTILO NOTICIÁRIO DE TV */
-.news-bar {
-    background: linear-gradient(90deg, #1a1a1a 0%, #0d0d0d 50%, #1a1a1a 100%);
+#rssFeed {
+    margin-top: 20px;
+}
+
+.news-item {
+    background: linear-gradient(90deg, #1a1a1a 0%, #0b0b0b 50%, #1a1a1a 100%);
     border-top: 2px solid rgba(220, 20, 60, 0.6);
     border-bottom: 2px solid rgba(220, 20, 60, 0.6);
-    overflow: hidden;
-    height: 50px;
-    display: flex;
-    align-items: center;
-    padding: 0 15px;
-    position: relative;
-}
-
-.news-track {
-    white-space: nowrap;
-    animation: scroll linear infinite;
+    padding: 15px;
+    border-radius: 10px;
+    margin-bottom: 10px;
     font-size: 12px;
-    font-weight: 500;
-    letter-spacing: 0.5px;
-    color: #e5e5e5;
-    text-shadow: 0 1px 3px rgba(0,0,0,0.5);
+    cursor: pointer;
+    transition: all 0.3s ease;
 }
 
-@keyframes scroll {
-    from { transform: translateX(0); }
-    to { transform: translateX(-100%); }
+.news-item:hover {
+    background: linear-gradient(90deg, #242424 0%, #151515 50%, #242424 100%);
 }
 
 .footer {
     text-align: center;
     padding: 15px;
-    font-size: 11px;
-    opacity: 0.5;
+    font-size: 12px;
+    color: #777;
 }
 </style>
 </head>
@@ -251,13 +217,12 @@ body {
 
 <div class="cover"></div>
 
-<div class="scroll-container">
-<span id="artistText" class="scroll-text">Carregando artista...</span>
-</div>
+<div class="section">
 
-<div class="scroll-container">
+<div class="text3d">AO VIVO</div>
+
+<span id="artistText" class="scroll-text">Carregando artista...</span>
 <span id="titleText" class="scroll-text">Carregando música...</span>
-</div>
 
 <div class="controls">
 <button class="btn" onclick="playRadio()">▶</button>
@@ -265,85 +230,137 @@ body {
 </div>
 
 <div class="grid">
-<div class="card" onclick="openInsta()">
-<img src="https://cdn.jsdelivr.net/gh/simple-icons/simple-icons/icons/instagram.svg" alt="Instagram">
-Instagram
+<div class="card" onclick="openInsta()">📸 Instagram</div>
+<div class="card" onclick="openThreads()">🧵 Threads</div>
+<div class="card" onclick="participar()">🎙️ Participar</div>
+<div class="card">📰 Notícias</div>
 </div>
 
-<div class="card" onclick="openThreads()">
-<img src="https://cdn.jsdelivr.net/gh/simple-icons/simple-icons/icons/threads.svg" alt="Threads">
-Threads
-</div>
-
-<div class="card" onclick="participar()">
-<img src="https://cdn.jsdelivr.net/gh/simple-icons/simple-icons/icons/whatsapp.svg" alt="WhatsApp">
-Participar
-</div>
-</div>
-
-<div class="news-bar">
-<div id="newsTrack" class="news-track"></div>
-</div>
-
-<div class="footer">MiB Digital Broadcast</div>
+<div id="rssFeed"></div>
 
 </div>
 
-<audio id="radioPlayer"></audio>
+<div class="footer">MiB é made in Brasil, baby</div>
 
+</div>
+
+<!-- PLAYER -->
+<audio id="radioPlayer" preload="none">
+<source src="https://r10.ciclano.io/proxy/radiomib/stream" type="audio/mpeg" />
+</audio>
+
+<!-- CENTOVA -->
 <span id="ccArtist" class="cc_streaminfo" data-type="trackartist" data-username="radiomib" style="display:none"></span>
 <span id="ccTitle" class="cc_streaminfo" data-type="tracktitle" data-username="radiomib" style="display:none"></span>
 
 <script src="https://r10.ciclano.io:2199/system/streaminfo.js"></script>
 
 <script>
-const player=document.getElementById('radioPlayer');
+const player = document.getElementById('radioPlayer');
 
-function playRadio(){
-player.src="https://r10.ciclano.io/proxy/radiomib/stream";
-player.play();
+/* PLAYER */
+function playRadio() {
+    player.src = "https://r10.ciclano.io/proxy/radiomib/stream?t=" + Date.now();
+    player.play();
 }
 
-function stopRadio(){
-player.pause();
+function stopRadio() {
+    player.pause();
+    player.currentTime = 0;
 }
 
-/* ATUALIZA TEXTO + VELOCIDADE DINÂMICA */
-function atualizarTexto(){
-const artist=document.getElementById("ccArtist").innerText || "—";
-const title=document.getElementById("ccTitle").innerText || "—";
-
-const artistEl=document.getElementById("artistText");
-const titleEl=document.getElementById("titleText");
-
-artistEl.innerText=artist;
-titleEl.innerText=title;
-
-/* velocidade proporcional - mais lento para textos curtos */
-const artistDuration = Math.max(10, artist.length * 0.25);
-const titleDuration = Math.max(10, title.length * 0.25);
-
-artistEl.style.animationDuration = artistDuration + "s";
-titleEl.style.animationDuration = titleDuration + "s";
+/* REDES */
+function openInsta() {
+    window.open("https://www.instagram.com/radiomibprodutora/", "_blank");
 }
 
-setInterval(atualizarTexto,2000);
+function openThreads() {
+    window.open("https://www.threads.net/@radiomibprodutora", "_blank");
+}
 
-/* news */
-const noticias=[
-"Música brasileira em crescimento global",
-"Turismo no Ceará bate recordes",
-"Viagens internacionais retomam força",
-"Descobertas científicas avançam rapidamente"
+function participar() {
+    window.open("https://wa.me/5585988148344?text=Estou%20ouvindo%20a%20Rádio%20MIB!", "_blank");
+}
+
+/* METADATA */
+function mirrorText(fromEl, toEl, placeholder) {
+    const txt = (fromEl.textContent || "").trim();
+    toEl.textContent = txt || placeholder;
+}
+
+function setupObservers() {
+    const artistSrc = document.getElementById('ccArtist');
+    const titleSrc  = document.getElementById('ccTitle');
+    const artistOut = document.getElementById('artistText');
+    const titleOut  = document.getElementById('titleText');
+
+    const cfg = { childList: true, subtree: true };
+
+    new MutationObserver(() => {
+        mirrorText(artistSrc, artistOut, "—");
+    }).observe(artistSrc, cfg);
+
+    new MutationObserver(() => {
+        mirrorText(titleSrc, titleOut, "—");
+    }).observe(titleSrc, cfg);
+}
+
+setupObservers();
+
+/* RSS REAL FUNCIONANDO */
+const feeds = [
+"https://news.google.com/rss/search?q=música&hl=pt-BR&gl=BR&ceid=BR:pt-419",
+"https://news.google.com/rss/search?q=turismo+ceará&hl=pt-BR&gl=BR&ceid=BR:pt-419",
+"https://news.google.com/rss/search?q=viagens+internacionais&hl=pt-BR&gl=BR&ceid=BR:pt-419",
+"https://news.google.com/rss/search?q=descobertas+científicas&hl=pt-BR&gl=BR&ceid=BR:pt-419"
 ];
 
-const track=document.getElementById("newsTrack");
+let noticias = [];
 
-track.innerText = noticias.join("   •   ") + "   •   " + noticias.join("   •   ");
+async function carregarFeeds() {
+    for (let feed of feeds) {
+        try {
+            const res = await fetch("https://api.allorigins.win/get?url=" + encodeURIComponent(feed));
+            const data = await res.json();
+            const parser = new DOMParser();
+            const xml = parser.parseFromString(data.contents, "text/xml");
 
-const duration = track.innerText.length * 0.25;
-track.style.animationDuration = duration + "s";
+            const items = xml.querySelectorAll("item");
+
+            items.forEach(item => {
+                noticias.push({
+                    title: item.querySelector("title")?.textContent,
+                    link: item.querySelector("link")?.textContent
+                });
+            });
+
+        } catch(e) {
+            console.log("Erro no feed:", e);
+        }
+    }
+
+    mostrarNoticias();
+}
+
+function mostrarNoticias() {
+    const container = document.getElementById("rssFeed");
+
+    setInterval(() => {
+        if (noticias.length === 0) return;
+
+        const n = noticias[Math.floor(Math.random() * noticias.length)];
+
+        container.innerHTML = `
+            <div class="news-item" onclick="window.open('${n.link}', '_blank')">
+                📰 ${n.title}
+            </div>
+        `;
+    }, 4000);
+}
+
+carregarFeeds();
 </script>
 
 </body>
 </html>
+
