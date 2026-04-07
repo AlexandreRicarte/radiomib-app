@@ -3,7 +3,6 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-
 <title>Rádio MIB - Painel Indoor</title>
 
 <link href="https://fonts.googleapis.com/css?family=Inter:400,600&display=swap" rel="stylesheet">
@@ -207,11 +206,15 @@ async function carregarNoticias(){
             const xml = parser.parseFromString(data.contents,"text/xml");
 
             xml.querySelectorAll("item").forEach(item=>{
+                // tenta pegar thumbnail real do RSS
+                let media = item.querySelector("media\\:thumbnail, thumbnail");
+                let imgUrl = media ? media.getAttribute('url') : null;
+                if(!imgUrl) imgUrl = `https://source.unsplash.com/400x300/?news`;
+
                 noticias.push({
                     title: item.querySelector("title")?.textContent,
                     link: item.querySelector("link")?.textContent,
-                    // se não tiver imagem real, usamos placeholder do Unsplash
-                    img: `https://source.unsplash.com/400x300/?news`
+                    img: imgUrl
                 });
             });
 
